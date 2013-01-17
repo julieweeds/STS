@@ -63,7 +63,7 @@ class Totals:
             for line in f:
                 self.linecount +=1
                 self.process(line.rstrip())
-                if((self.linecount % 1000)==0):print "Read line: "+self.linecount
+                if((self.linecount % 1000)==0):print "Read line: "+str(self.linecount)
             f.close()
             self.filereads+=1;
             if self.filereads==1:
