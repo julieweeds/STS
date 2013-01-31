@@ -5,12 +5,15 @@ import re
 import glob
 import random
 import numpy
+import scipy.stats as stats
+import matplotlib.pyplot as plt
 
 class STSData:
     sidPATT = re.compile('.*<document>')
     sidendPATT = re.compile('.*</document>')
     wordPATT = re.compile('.*<word>(.*)</word>')
     lemmaPATT = re.compile('.*<lemma>(.*)</lemma>')
+    posPATT = re.compile('.*<POS>(.).*</POS>')
     fileidPATT= re.compile('.*STSinput(.*)/pair(.*)(.).tagged')
     gssetPATT = re.compile('.*STS.gs.(.*).txt')
 
@@ -84,6 +87,11 @@ class STSData:
                         if matchobj:
                             lemma = matchobj.group(1)
                             self.currentpair.addlemma(lemma,self.sentid)
+                        else:
+                            matchobj=STSData.posPATT.match(line)
+                            if matchobj:
+                                pos = matchobj.group(1)
+                                self.currentpair.addpos(pos,self.sentid)
 
 
 
@@ -106,7 +114,6 @@ class STSData:
                             count+=1
             average = total/count
             self.simaverage[label]=average
-            self.freq[label]=count
         return average
 
     def readgs(self,dirname):
@@ -165,10 +172,58 @@ class STSData:
                     fileid+=1
             else:
                 carryon=False #assumes pairs are consecutively numbered
-        print len(correlationx),len(correlationy)
+        #print len(correlationx),len(correlationy)
+        x=numpy.array(correlationx)
+        y=numpy.array(correlationy)
+        thispoly= numpy.poly1d(numpy.polyfit(x,y,1))
 
-        return numpy.polyfit(numpy.array(correlationx),numpy.array(correlationy),2)
+        if excl==1:
+            pr=stats.spearmanr(x,y)
+            mytitle="Regression line for: "+subset+":"+str(excl)+":"+type
+            self.showpoly(x,y,thispoly,mytitle,pr,1,5)
 
+        return thispoly
+
+    def showpoly(self,x,y,poly,title,pr,xl,yl):
+        xp=numpy.linspace(0,xl,100)
+        plt.plot(x,y,'.',xp,poly(xp),'-')
+        plt.ylim(0,yl)
+        plt.title(title)
+        mytext1="srcc = "+str(pr[0])
+        mytext2="p = "+str(pr[1])
+        plt.text(0.05,yl*0.9,mytext1)
+        plt.text(0.05,yl*0.8,mytext2)
+        plt.show()
+
+    def testpoly(self,subset,excl,type):
+
+        thispoly = self.fitpoly(subset,excl,type)
+
+        fileid =1
+        predictions=[]
+        gs=[]
+        carryon=True
+        while carryon == True:
+            label = subset+"_"+str(fileid)
+            if label in self.pairset.keys():
+                if self.pairset[label].cvsplit== excl:
+                    predictions.append(thispoly(self.pairset[label].sim(type)))
+                    gs.append(self.pairset[label].gs)
+                    fileid+=1
+                else:
+                    #ignore
+                    fileid+=1
+            else:
+                carryon = False
+        #now to compute spearman correlation coefficient between gs and predictions
+
+        x=numpy.array(predictions)
+        y=numpy.array(gs)
+        pr = stats.spearmanr(x,y)
+        if excl==1:
+            mytitle="Correlation for: "+subset+": "+str(excl)+": "+type
+            self.showpoly(x,y,numpy.poly1d(numpy.polyfit(x,y,1)),mytitle,pr,5,5)
+        return pr
 
 
     def testread(self):
@@ -177,11 +232,15 @@ class STSData:
         print "Pairs stored = "+str(len(self.pairset))
         for p in self.pairset.values():
             p.display()
+            if p.lcsim<0:
+                print "Error"
+                exit(1)
 
-        print "Average lemma overlap is "+str(self.averagesim("lemma","all"))
-        print "Average lemma overlap for europarl data is "+str(self.averagesim("lemma","SMTeuroparl"))
-        print "Average lemma overlap for MSRpar data is "+str(self.averagesim("lemma","MSRpar"))
-        print "Average lemma overlap for MSRvid data is "+str(self.averagesim("lemma","MSRvid"))
+
+        print "Average lemma overlap of content words is "+str(self.averagesim("lemma_content","all"))
+        print "Average lemma overlap of content words for europarl data is "+str(self.averagesim("lemma_content","SMTeuroparl"))
+        print "Average lemma overlap of content words for MSRpar data is "+str(self.averagesim("lemma_content","MSRpar"))
+        print "Average lemma overlap of content words for MSRvid data is "+str(self.averagesim("lemma_content","MSRvid"))
 
         print "Average gs overlap is "+str(self.averagesim("gs","all"))
         print "Average gs overlap for europarl data is "+str(self.averagesim("gs","SMTeuroparl"))
