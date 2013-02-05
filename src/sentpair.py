@@ -19,6 +19,7 @@ class SentencePair:
         self.cvsplit=-1
         self.prediction=-1
         self.lcsim=-1
+        self.tcsim=-1
 
     def addword(self,word,sentid):
         if sentid=='A':
@@ -59,9 +60,12 @@ class SentencePair:
                 else:
                     if type == "lemma_content":
                         ressim=self.lemcontsim()
-
                     else:
-                        print "Error - unknown sim type: "+type
+                        if type=="token_content":
+                            ressim=self.tokcontsim()
+
+                        else:
+                            print "Error - unknown sim type: "+type
         if ressim <0 :
             print type+" similarity error for "
             self.display()
@@ -82,6 +86,7 @@ class SentencePair:
             if lemma in self.lemmasB:
                 Boverlap +=1
         self.lsim = (Aoverlap+Boverlap)*1.0/(len(self.lemmasA)+len(self.lemmasB))
+
 
     def lemcontsim(self):
         if self.lcsim<0:
@@ -119,6 +124,41 @@ class SentencePair:
                     Boverlap+=1
         self.lcsim = (Aoverlap+Boverlap)*1.0/(Alength+Blength)
 
+    def tokcontsim(self):
+        if self.tcsim<0:
+            self.tokcontoverlap()
+        if self.tcsim<0:
+            print "Error computing token overlap of content words"
+            self.display()
+            exit(1)
+        return self.tcsim
+
+    def tokcontoverlap(self):
+
+        if len(self.posA) != len(self.tokensA):
+            print "Error with number of POS tags"
+            self.display()
+            return
+        if len(self.posB) != len(self.tokensB):
+            print "Error with number of POS tags"
+            self.display()
+            return
+        Aoverlap=0
+        Boverlap=0
+        Alength=0
+        Blength=0
+        for i in range(0,len(self.posA)):
+            if self.posA[i] in SentencePair.contentPOS:
+                Alength+=1
+
+                if self.tokensA[i] in self.tokensB:
+                    Aoverlap+=1
+        for i in range(0,len(self.posB)):
+            if self.posB[i] in SentencePair.contentPOS:
+                Blength+=1
+                if self.tokensB[i] in self.tokensA:
+                    Boverlap+=1
+        self.tcsim = (Aoverlap+Boverlap)*1.0/(Alength+Blength)
 
 
     def wordsim(self):

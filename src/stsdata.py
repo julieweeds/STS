@@ -18,7 +18,7 @@ class STSData:
     gssetPATT = re.compile('.*STS.gs.(.*).txt')
 
 
-    def __init__(self):
+    def __init__(self,graphson):
         self.pairset={} #label is setid_fileid
         self.vectordict={}
         self.sid=0
@@ -29,6 +29,7 @@ class STSData:
         self.fileid=0
         self.simaverage={} #average similarities for different functions and subsets
         self.nosplits=-1 #number of cross-validation splits
+        self.show=graphson
 
 
     def readdata(self,parentname):
@@ -146,7 +147,7 @@ class STSData:
             exit(1)
 
     def split(self,num):
-        print "Splitting data into subsets for cross-validation ..."
+        #print "Splitting data into subsets for cross-validation ..."
         self.nosplits=num
         for pair in self.pairset.values():
             rsplit = random.randint(1,num)
@@ -177,7 +178,7 @@ class STSData:
         y=numpy.array(correlationy)
         thispoly= numpy.poly1d(numpy.polyfit(x,y,1))
 
-        if excl==1:
+        if excl==1 and self.show == True:
             pr=stats.spearmanr(x,y)
             mytitle="Regression line for: "+subset+":"+str(excl)+":"+type
             self.showpoly(x,y,thispoly,mytitle,pr,1,5)
@@ -220,7 +221,7 @@ class STSData:
         x=numpy.array(predictions)
         y=numpy.array(gs)
         pr = stats.spearmanr(x,y)
-        if excl==1:
+        if excl==1 and self.show==True:
             mytitle="Correlation for: "+subset+": "+str(excl)+": "+type
             self.showpoly(x,y,numpy.poly1d(numpy.polyfit(x,y,1)),mytitle,pr,5,5)
         return pr
