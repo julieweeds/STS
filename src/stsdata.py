@@ -1,6 +1,7 @@
 __author__ = 'juliewe'
 
 from sentpair import SentencePair
+from wordvector import WordVector
 import re
 import glob
 import random
@@ -16,11 +17,11 @@ class STSData:
     posPATT = re.compile('.*<POS>(.).*</POS>')
     fileidPATT= re.compile('.*STSinput(.*)/pair(.*)(.).tagged')
     gssetPATT = re.compile('.*STS.gs.(.*).txt')
-
+    wordposPATT = re.compile('(.*)/(.*)')
 
     def __init__(self,graphson):
         self.pairset={} #label is setid_fileid
-        self.vectordict={}
+        self.vectordict={} #mapping from (word,POS) tuples to wordvectors
         self.sid=0
         self.filesread=0
         self.setid=""
@@ -30,7 +31,7 @@ class STSData:
         self.simaverage={} #average similarities for different functions and subsets
         self.nosplits=-1 #number of cross-validation splits
         self.show=graphson
-
+        self.updated=0
 
     def readdata(self,parentname):
         dirlist = glob.glob(parentname+'/*')
@@ -50,6 +51,7 @@ class STSData:
                     print "Error with filename, should contain id number "+f
 
                 self.readdatafile(f)
+        self.vectordict_init()
 
 
     def readdatafile(self,filename):
@@ -247,3 +249,46 @@ class STSData:
         print "Average gs overlap for europarl data is "+str(self.averagesim("gs","SMTeuroparl"))
         print "Average gs overlap for MSRpar data is "+str(self.averagesim("gs","MSRpar"))
         print "Average gs overlap for MSRvid data is "+str(self.averagesim("gs","MSRvid"))
+
+    def vectordict_init(self):
+        for pair in self.pairset.values():
+            for sent in ['A','B']
+               for item in pair.returncontentlemmas(sent):
+                    if item in self.vectordict:
+                        self.check=True
+                    else:
+                        self.vectordict[item]=WordVector(item)
+        print "Vector dictionary initialised with "+str(len(self.vectordict.keys()))+" words"
+
+    def readvectors(self,vectorfilename):
+        print"Reading vector file"
+        linesread=0
+        instream=open(vectorfilename,'r')
+        for line in instream:
+            self.processvectorline(line.rstrip())
+            linesread+=1
+            if (linesread>5):
+                print "Read "+str(linesread)+" lines and updated "+str(self.updated)+" vectors"
+                break
+        instream.close()
+
+    def processvectorline(self,line):
+        featurelist=line.split('\t')
+        matchobj = STSData.wordposPATT.match(featurelist[0])
+        if matchobj:
+            wordpos=(matchobj.group(1),matchobj.group(2))
+        else:
+            print "Error with vector file matching "+featurelist[0]
+            exit(1)
+
+        #if len(featurelist)>WordVector.dim:
+         #   WordVector.dim=len(featurelist)
+        if wordpos in self.vectordict.keys():
+            featurelist.reverse()
+            featurelist.pop()
+            self.vectordict[wordpos].update(featurelist)
+            self.updated+=1
+
+    def composeall(self,method):
+        for pair in pairset.values():
+            pair.compose(method,self.vectordict)

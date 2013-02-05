@@ -1,5 +1,7 @@
 __author__ = 'juliewe'
 
+from wordvector import WordVector
+
 class SentencePair:
     entrycount=0
     contentPOS=['N','V','J','R']
@@ -20,7 +22,7 @@ class SentencePair:
         self.prediction=-1
         self.lcsim=-1
         self.tcsim=-1
-
+        self.sentvector ={}
     def addword(self,word,sentid):
         if sentid=='A':
             self.tokensA.append(word)
@@ -86,6 +88,22 @@ class SentencePair:
             if lemma in self.lemmasB:
                 Boverlap +=1
         self.lsim = (Aoverlap+Boverlap)*1.0/(len(self.lemmasA)+len(self.lemmasB))
+
+
+    def returncontentlemmas(self):
+        return (self.returncontentlemmas('A'),self.returncontentlemmas('B'))
+
+    def returncontentlemmas(self,sent):
+        lemmalist=[]
+        if sent=='A':
+            for i in range(0,len(self.posA)):
+                if self.posA[i] in SentencePair.contentPOS:
+                    lemmalist.append((self.lemmasA[i],self.posA[i]))
+        else:
+            for i in range(0,len(self.posB)):
+                if self.posB[i] in SentencePair.contentPOS:
+                    lemmalist.append((self.lemmasB[i],self.posB[i]))
+        return lemmalist
 
 
     def lemcontsim(self):
@@ -176,3 +194,17 @@ class SentencePair:
             if word in self.tokensA:
                 Boverlap+=1
         self.wsim=(Aoverlap+Boverlap)*1.0/(len(self.tokensA)+len(self.tokensB))
+
+    def compose(self,dict, method):
+        if method=="additive":
+            self.add_compose(dict)
+        else:
+            print "Unknown method of composition "+method
+
+    def add_compose(self,vectordict):
+        for sent in ['A','B']:
+            self.sentvector[sent]=WordVector(sent,'S')
+            lemmalist=self.returncontentlemmas(sent)
+            for tuple in lemmalist:
+                if tuple in vectordict:
+                    self.sentvector[sent].add(vectordict[tuple])
