@@ -5,7 +5,7 @@ from wordvector import WordVector
 class SentencePair:
     entrycount=0
     contentPOS=['N','V','J','R']
-    def __init__(self, id, fid):
+    def __init__(self, id, fid,testing):
         SentencePair.entrycount +=1
         self.lemmasA = []
         self.lemmasB = []
@@ -23,6 +23,11 @@ class SentencePair:
         self.lcsim=-1
         self.tcsim=-1
         self.sentvector ={}
+        self.sentsim={}
+        self.metric=""
+        self.comp=""
+        self.testing=testing
+
     def addword(self,word,sentid):
         if sentid=='A':
             self.tokensA.append(word)
@@ -40,13 +45,15 @@ class SentencePair:
             self.posB.append(pos)
 
     def display(self):
-        print self.fid, self.id, self.cvsplit, self.gs, self.lemmasim(), self.sim('lemma_content')
+        print self.fid, self.id, self.cvsplit, self.gs, self.sim('lemma'), self.sim('lemma_content'),self.sim('sent_comp')
         #print self.tokensA
         #print self.tokensB
         print self.lemmasA
         print self.posA
         print self.lemmasB
         print self.posB
+        self.sentvector['A'].display()
+        self.sentvector['B'].display()
 
     def sim(self,type):
         ressim =-1
@@ -65,12 +72,15 @@ class SentencePair:
                     else:
                         if type=="token_content":
                             ressim=self.tokcontsim()
-
                         else:
-                            print "Error - unknown sim type: "+type
-        if ressim <0 :
-            print type+" similarity error for "
-            self.display()
+                            if type=="sent_comp":
+                                ressim=self.getsentsim()
+
+                            else:
+                                print "Error - unknown sim type: "+type
+#        if ressim <0 :
+ #           print type+" similarity error for "
+ #           self.display()
         return ressim
 
     def lemmasim(self):
@@ -195,16 +205,33 @@ class SentencePair:
                 Boverlap+=1
         self.wsim=(Aoverlap+Boverlap)*1.0/(len(self.tokensA)+len(self.tokensB))
 
-    def compose(self,dict, method):
+    def compose(self,dict, method,metric):
+        self.comp=method
+        self.metric=metric
         if method=="additive":
+
             self.add_compose(dict)
         else:
             print "Unknown method of composition "+method
 
     def add_compose(self,vectordict):
         for sent in ['A','B']:
-            self.sentvector[sent]=WordVector(sent,'S')
+            self.sentvector[sent]=WordVector((sent,'S'))
             lemmalist=self.returncontentlemmas(sent)
             for tuple in lemmalist:
                 if tuple in vectordict:
                     self.sentvector[sent].add(vectordict[tuple])
+#                    if self.testing:
+#                        print "Adding vector for "+tuple[0]+"/"+tuple[1]
+#            if self.testing:
+#                self.sentvector[sent].display()
+
+    def getsentsim(self):
+        label = self.metric+"_"+self.comp
+        if label in self.sentsim.keys():
+            sim= self.sentsim[label]
+        else:
+            sim = self.sentvector['A'].findsim(self.sentvector['B'],self.metric)
+            self.sentsim[label]=sim
+#        print "getsentsim "+str(sim)
+        return sim

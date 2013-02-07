@@ -15,11 +15,11 @@ class STSData:
     wordPATT = re.compile('.*<word>(.*)</word>')
     lemmaPATT = re.compile('.*<lemma>(.*)</lemma>')
     posPATT = re.compile('.*<POS>(.).*</POS>')
-    fileidPATT= re.compile('.*STSinput(.*)/pair(.*)(.).tagged')
+    fileidPATT= re.compile('.*STSinput(.*).pair(.*)(.).tagged')
     gssetPATT = re.compile('.*STS.gs.(.*).txt')
     wordposPATT = re.compile('(.*)/(.*)')
 
-    def __init__(self,graphson):
+    def __init__(self,graphson,testing):
         self.pairset={} #label is setid_fileid
         self.vectordict={} #mapping from (word,POS) tuples to wordvectors
         self.sid=0
@@ -32,6 +32,7 @@ class STSData:
         self.nosplits=-1 #number of cross-validation splits
         self.show=graphson
         self.updated=0
+        self.testing=testing
 
     def readdata(self,parentname):
         dirlist = glob.glob(parentname+'/*')
@@ -51,6 +52,7 @@ class STSData:
                     print "Error with filename, should contain id number "+f
 
                 self.readdatafile(f)
+            if self.testing == True: break
         self.vectordict_init()
 
 
@@ -73,7 +75,7 @@ class STSData:
                 if self.label in self.pairset:
                     self.currentpair=self.pairset[self.label]
                 else:
-                    self.currentpair=SentencePair(self.fileid,self.setid)
+                    self.currentpair=SentencePair(self.fileid,self.setid,self.testing)
 
             else:
                 matchobj=STSData.sidendPATT.match(line)
@@ -114,7 +116,10 @@ class STSData:
                 for p in self.pairset.values():
                     if (p.fid == subset):
                             total+=p.sim(type)
+                            print "average sim "+str(p.sim(type))
                             count+=1
+                            print count
+
             average = total/count
             self.simaverage[label]=average
         return average
@@ -125,6 +130,7 @@ class STSData:
         for f in filelist:
             print "Reading "+f
             self.readgsfile(f)
+            if self.testing == True: break
 
     def readgsfile(self,filename):
         matchobj=STSData.gssetPATT.match(filename)
@@ -233,26 +239,28 @@ class STSData:
         print "Testing"
         print "Files read = "+str(self.filesread)
         print "Pairs stored = "+str(len(self.pairset))
-        for p in self.pairset.values():
-            p.display()
-            if p.lcsim<0:
-                print "Error"
-                exit(1)
+        #for p in self.pairset.values():
+          #  p.display()
+          #  if p.lcsim<0:
+           #     print "Error"
+           #     exit(1)
 
 
-        print "Average lemma overlap of content words is "+str(self.averagesim("lemma_content","all"))
-        print "Average lemma overlap of content words for europarl data is "+str(self.averagesim("lemma_content","SMTeuroparl"))
+        #print "Average lemma overlap of content words is "+str(self.averagesim("lemma_content","all"))
+        #print "Average lemma overlap of content words for europarl data is "+str(self.averagesim("lemma_content","SMTeuroparl"))
         print "Average lemma overlap of content words for MSRpar data is "+str(self.averagesim("lemma_content","MSRpar"))
-        print "Average lemma overlap of content words for MSRvid data is "+str(self.averagesim("lemma_content","MSRvid"))
+        #print "Average lemma overlap of content words for MSRvid data is "+str(self.averagesim("lemma_content","MSRvid"))
 
-        print "Average gs overlap is "+str(self.averagesim("gs","all"))
-        print "Average gs overlap for europarl data is "+str(self.averagesim("gs","SMTeuroparl"))
+        #print "Average gs overlap is "+str(self.averagesim("gs","all"))
+        #print "Average gs overlap for europarl data is "+str(self.averagesim("gs","SMTeuroparl"))
         print "Average gs overlap for MSRpar data is "+str(self.averagesim("gs","MSRpar"))
-        print "Average gs overlap for MSRvid data is "+str(self.averagesim("gs","MSRvid"))
+        #print "Average gs overlap for MSRvid data is "+str(self.averagesim("gs","MSRvid"))
+
+        print "Average composed sentence similarity for MSRpardata is "+str(self.averagesim("sent_comp","MSRpar"))
 
     def vectordict_init(self):
         for pair in self.pairset.values():
-            for sent in ['A','B']
+            for sent in ['A','B']:
                for item in pair.returncontentlemmas(sent):
                     if item in self.vectordict:
                         self.check=True
@@ -267,9 +275,12 @@ class STSData:
         for line in instream:
             self.processvectorline(line.rstrip())
             linesread+=1
-            if (linesread>5):
-                print "Read "+str(linesread)+" lines and updated "+str(self.updated)+" vectors"
+            if (self.testing==True and linesread>100):
+
                 break
+        print "Read "+str(linesread)+" lines and updated "+str(self.updated)+" vectors"
+        coverage=self.updated*100.0/len(self.vectordict.keys())
+        print "Vector dictionary coverage is "+str(coverage)+"%"
         instream.close()
 
     def processvectorline(self,line):
@@ -289,6 +300,6 @@ class STSData:
             self.vectordict[wordpos].update(featurelist)
             self.updated+=1
 
-    def composeall(self,method):
-        for pair in pairset.values():
-            pair.compose(method,self.vectordict)
+    def composeall(self,method,metric):
+        for pair in self.pairset.values():
+            pair.compose(self.vectordict,method,metric)

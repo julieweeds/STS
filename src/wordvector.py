@@ -4,7 +4,7 @@ import re
 
 class WordVector:
 
-    windows=False
+    windows=True
     windowPATT=re.compile('T:.*')
 
     def __init__(self, wordpos):
@@ -18,21 +18,24 @@ class WordVector:
 
 
     def addfeature(self,feature,score):
-        if feature in self.vector:
-            print "Error "+self.word+" already has feature "+feature
-            exit(1)
+        if score <=0:
+            return
         else:
-            matchobj=WordVector.windowPATT.match(feature)
-            if matchobj:
-                if WordVector.windows:
-                    self.vector[feature]=float(score)
-                    self.width+=1
-                    self.length2+=float(score)*float(score)
+            if feature in self.vector:
+                print "Error "+self.word+" already has feature "+feature
+                exit(1)
             else:
-                if WordVector.windows==False:
-                    self.vector[feature]=float(score)
-                    self.width+=1
-                    self.length2+=float(score)*float(score)
+                matchobj=WordVector.windowPATT.match(feature)
+                if matchobj:
+                    if WordVector.windows:
+                        self.vector[feature]=float(score)
+                        self.width+=1
+                        self.length2+=float(score)*float(score)
+                else:
+                    if WordVector.windows==False:
+                        self.vector[feature]=float(score)
+                        self.width+=1
+                        self.length2+=float(score)*float(score)
 
 
     def update(self,featurelist):
@@ -41,26 +44,29 @@ class WordVector:
 
             self.addfeature(featurelist.pop(),featurelist.pop())
         self.length=pow(self.length2,0.5)
-        self.display()
+        #self.display()
 
     def add(self,avector):
-        for feature in avector.vector:
-            score=avector.vector[feature]
-            if feature in self.vector:
-                oldscore=self.vector[feature]
-                self.length2-=oldscore
-                newscore=oldscore+score
-                self.vector[feature]=newscore
-                self.length2+=newscore*newscore
-            else:
-                self.vector[feature]=score
-                self.width+=1
-                self.length2+=score*score
-        self.length=pow(self.length2,0.5)
+        if len(avector.vector)>0:
+            #print"adding features"
+            #avector.display()
+            for feature in avector.vector:
+                score=avector.vector[feature]
+                if feature in self.vector:
+                    oldscore=self.vector[feature]
+                    self.length2-=oldscore
+                    newscore=oldscore+score
+                    self.vector[feature]=newscore
+                    self.length2+=newscore*newscore
+                else:
+                    self.vector[feature]=score
+                    self.width+=1
+                    self.length2+=score*score
+            self.length=pow(self.length2,0.5)
 
     def getfeature(self,feature):
-        if feature in self.vector:
-            return vector[feature]
+        if feature in self.vector.keys():
+            return self.vector[feature]
         else:
             return 0
 
@@ -71,20 +77,26 @@ class WordVector:
 
     def findsim(self,avector,metric):
         if metric =="cosine":
-            return cossim(self,avector)
+            return self.cossim(avector)
         else:
             print "Unknown similarity metric "+metric
 
     def cossim(self,avector):
-        dotprod=0
-        if self.width<avector.width:
-            for feature in self.vector:
-                dotprod+=avector.getfeature(feature)*self.getfeature(feature)
+        if self.length*avector.length == 0:
+            sim = 0
+            print"Warning: 0 length vectors"
         else:
-            for feature in avector.vector:
-                dotprod+=self.getfeature(feature)*avector.getfeature(feature)
+            dotprod=0
+            print self.width,avector.width
+            if self.width<avector.width:
+                for feature in self.vector.keys():
+                    dotprod+=avector.getfeature(feature)*self.getfeature(feature)
+            else:
+                for feature in avector.vector.keys():
+                    dotprod+=self.getfeature(feature)*avector.getfeature(feature)
 
-        sim = dotprod/(self.length*avector.length)
+            sim = dotprod/(self.length*avector.length)
+#        print "cossim: "+str(sim)
         return sim
 
 

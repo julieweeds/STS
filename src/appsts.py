@@ -2,18 +2,39 @@ __author__ = 'juliewe'
 
 from stsdata import STSData
 
-datadirname="/Users/juliewe/Documents/workspace/STS/data/trial/STS2012-train/STSinput-tagged"
-gsdirname="/Users/juliewe/Documents/workspace/STS/data/trial/STS2012-train/gs"
-vectorfilename="/Volumes/research/calps/data3/juliewe/STS/data/vectors/vectors_mi"
+testing=False
+at_home=True
+on_apollo=False
+
+#uni filenames
+parent="/Users/juliewe/Documents/workspace/STS/data/"
+
+if at_home:
+    parent="C:/Users/Julie/Documents/sussex/STS/data/"
+
+if on_apollo:
+    parent="/mnt/lustre/scratch/inf/juliewe/STS/data/"
+
+datadirname=parent+"trial/STS2012-train/STSinput-tagged"
+gsdirname=parent+"trial/STS2012-train/gs"
+vectorfilename=parent+"vectors_mi"
+
 cv_param=10
 cv_repeat=10
 k=1.96 #for 95% confidence intervals
 files=["MSRpar","MSRvid","SMTeuroparl"]
-sims=["token_content","lemma_content","token","lemma"]
-#sims=["lemma_content"]
+sims=["lemma_content","sent_comp"]
 graphson=False
 
+if testing:
+    sims=["sent_comp"]
+    files=["MSRpar"]
+    cv_param=5
+    cv_repeat=1
+    graphson=False
 
+comptype="additive"
+metric="cosine"
 
 
 def do_correlation(mydata):
@@ -44,10 +65,11 @@ def do_correlation(mydata):
             print "Average cross-validation correlation for "+f+" with "+type+" similarity is "+str(av)+", sd="+str(sd)+", n="+str(n)
             print "95% confidence interval is "+str(av)+" +- "+str(int)
 
-mydata = STSData(graphson)
+mydata = STSData(graphson,testing)
 mydata.readdata(datadirname)
 mydata.readgs(gsdirname)
 mydata.readvectors(vectorfilename)
+mydata.composeall(comptype,metric)
 #mydata.testread()
-#do_correlation(mydata)
+do_correlation(mydata)
 
