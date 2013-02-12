@@ -3,8 +3,8 @@ __author__ = 'juliewe'
 from stsdata import STSData
 
 testing=False
-at_home=True
-on_apollo=False
+at_home=False
+on_apollo=True
 
 #uni filenames
 parent="/Users/juliewe/Documents/workspace/STS/data/"
@@ -32,6 +32,7 @@ if testing:
     cv_param=5
     cv_repeat=1
     graphson=False
+    vectorfilename=vectorfilename+"_test"
 
 comptype="additive"
 metric="cosine"

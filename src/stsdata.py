@@ -275,7 +275,7 @@ class STSData:
         for line in instream:
             self.processvectorline(line.rstrip())
             linesread+=1
-            if (self.testing==True and linesread>100):
+            if (self.testing==True and linesread>10):
 
                 break
         print "Read "+str(linesread)+" lines and updated "+str(self.updated)+" vectors"

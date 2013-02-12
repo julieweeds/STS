@@ -213,6 +213,7 @@ class SentencePair:
             self.add_compose(dict)
         else:
             print "Unknown method of composition "+method
+        self.getsentsim()
 
     def add_compose(self,vectordict):
         for sent in ['A','B']:
