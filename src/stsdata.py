@@ -8,6 +8,7 @@ import random
 import numpy
 import scipy.stats as stats
 import matplotlib.pyplot as plt
+from joblib import Parallel,delayed
 
 class STSData:
     sidPATT = re.compile('.*<document>')
@@ -302,4 +303,6 @@ class STSData:
 
     def composeall(self,method,metric):
         for pair in self.pairset.values():
-            pair.compose(self.vectordict,method,metric)
+            pair.compose(self.vectordict,method,metric) # compose and sentence sim each pair of sentences
+        #r = Parallel(n_jobs=4)(delayed (pair.compose(self.vectordict,method,metric)) for pair in self.pairset.values())
+            #parallel version of compise and compute sim

@@ -2,9 +2,9 @@ __author__ = 'juliewe'
 
 from stsdata import STSData
 
-testing=False
+testing=True
 at_home=False
-on_apollo=True
+on_apollo=False
 
 #uni filenames
 parent="/Users/juliewe/Documents/workspace/STS/data/"
@@ -70,7 +70,7 @@ mydata = STSData(graphson,testing)
 mydata.readdata(datadirname)
 mydata.readgs(gsdirname)
 mydata.readvectors(vectorfilename)
-mydata.composeall(comptype,metric)
+#mydata.composeall(comptype,metric)
 #mydata.testread()
-do_correlation(mydata)
+#do_correlation(mydata)
 
