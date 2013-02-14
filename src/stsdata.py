@@ -7,8 +7,10 @@ import glob
 import random
 import numpy
 import scipy.stats as stats
-import matplotlib.pyplot as plt
-from joblib import Parallel,delayed
+import sys
+
+#import matplotlib.pyplot as plt
+#from joblib import Parallel,delayed
 
 class STSData:
     sidPATT = re.compile('.*<document>')
@@ -279,6 +281,10 @@ class STSData:
             if (self.testing==True and linesread>10):
 
                 break
+            if (linesread%100 == 0):
+                print "Read "+str(linesread)+" lines and updated "+str(self.updated)+" vectors"
+                sys.stdout.flush()
+
         print "Read "+str(linesread)+" lines and updated "+str(self.updated)+" vectors"
         coverage=self.updated*100.0/len(self.vectordict.keys())
         print "Vector dictionary coverage is "+str(coverage)+"%"
@@ -304,5 +310,6 @@ class STSData:
     def composeall(self,method,metric):
         for pair in self.pairset.values():
             pair.compose(self.vectordict,method,metric) # compose and sentence sim each pair of sentences
+            sys.stdout.flush()
         #r = Parallel(n_jobs=4)(delayed (pair.compose(self.vectordict,method,metric)) for pair in self.pairset.values())
             #parallel version of compise and compute sim
