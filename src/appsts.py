@@ -3,9 +3,9 @@ __author__ = 'juliewe'
 import sys
 from stsdata import STSData
 
-testing=True
+testing=False
 at_home=False
-on_apollo=False
+on_apollo=True
 
 #uni filenames
 parent="/Users/juliewe/Documents/workspace/STS/data/"

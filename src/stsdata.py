@@ -8,9 +8,9 @@ import random
 import numpy
 import scipy.stats as stats
 import sys
+import scipy.sparse as sparse
 
 #import matplotlib.pyplot as plt
-#from joblib import Parallel,delayed
 
 class STSData:
     sidPATT = re.compile('.*<document>')
@@ -38,6 +38,10 @@ class STSData:
         self.testing=testing
         self.comp=""
         self.metric=""
+        self.allfeatures={} #dictionary of all feature dimenesions
+        self.fkeys=[] #list (to be sorted) of all features to
+        self.fk_idx={} #feature --> dimension
+        self.dim=0
 
     def readdata(self,parentname):
         dirlist = glob.glob(parentname+'/*')
@@ -291,6 +295,9 @@ class STSData:
         coverage=self.updated*100.0/len(self.vectordict.keys())
         print "Vector dictionary coverage is "+str(coverage)+"%"
         instream.close()
+        print "Compressing vector dictionary representation"
+        self.makematrix()
+        print "Finished sparse array generation"
 
     def processvectorline(self,line):
         featurelist=line.split('\t')
@@ -306,24 +313,62 @@ class STSData:
         if wordpos in self.vectordict.keys():
             featurelist.reverse()
             featurelist.pop()
-            self.vectordict[wordpos].update(featurelist)
+            self.updatevector(wordpos,featurelist)
             self.updated+=1
 
-    def composeall(self,method,metric):
-        for pair in self.pairset.values():
-            pair.compose(self.vectordict,method,metric) # compose and sentence sim each pair of sentences
-            sys.stdout.flush()
-        #r = Parallel(n_jobs=4)(delayed (pair.compose(self.vectordict,method,metric)) for pair in self.pairset.values())
-            #parallel version of compise and compute sim
+    def updatevector(self,wordpos,featurelist):
+        while(len(featurelist)>0):
+            f=featurelist.pop()
+            sc=featurelist.pop()
+            self.vectordict[wordpos].addfeature(f,sc)
+            self.allfeatures[f]=1
+        self.vectordict[wordpos].length=pow(self.vectordict[wordpos].length2,0.5)
+
+    def makematrix(self):
+        self.fkeys =self.allfeatures.keys()
+        self.fkeys.sort()
+        for i in range(len(self.fkeys)):
+            self.fk_idx[self.fkeys[i]] = i
+        del self.fkeys
+        del self.allfeatures
+        self.dim=len(self.fk_idx)
+        print "Dimensionality is "+ str(self.dim)
+        self.makearrays()
+
+    def makearrays(self):
+        #need to convert a word vector which stores a dictionary of features into a sparse array based on fk_idx
+        for wordvector in self.vectordict.values():
+            #wordvector.array=lil_matrix((1,self.dim))
+            temparray = numpy.zeros(self.dim)
+            for feature in wordvector.vector.keys():
+
+                col=self.fk_idx[feature]
+                score=wordvector.vector[feature]
+#                wordvector.array[col,1]=score
+                temparray[col]=score
+            wordvector.array = sparse.csr_matrix(temparray)
+           # print "Converted "+wordvector.word+"/"+wordvector.pos
+
+
+#    def composeall(self,method,metric):
+#        for pair in self.pairset.values():
+#            pair.compose(self.vectordict,method,metric) # compose and sentence sim each pair of sentences
+#            sys.stdout.flush()
+
 
     def composeall_faster(self,method,metric):
         self.comp=method
         self.metric=metric
         if method=="additive":
+            donepairs=0
             for pair in self.pairset.values():
                 self.compose_faster(pair)
                 sys.stdout.flush()
                 pair.getsentsim()
+                donepairs+=1
+                if donepairs%100 ==0:
+                    print "Completed composition and similarity calculations for "+str(donepairs)+" pairs"
+
 
         else:
             print "Unknown method of composition "+method
@@ -334,7 +379,8 @@ class STSData:
         pair.metric=self.metric
         for sent in ['A','B']:
             pair.sentvector[sent]=WordVector((sent,'S'))
+            pair.sentvector[sent].array=sparse.csr_matrix(numpy.zeros(self.dim)) #initialise sentence array as zeroes
             lemmalist=pair.returncontentlemmas(sent)
             for tuple in lemmalist:
                 if tuple in self.vectordict:
-                    pair.sentvector[sent].add(self.vectordict[tuple])
+                    pair.sentvector[sent].add_array(self.vectordict[tuple])

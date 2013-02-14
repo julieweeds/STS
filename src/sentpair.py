@@ -206,6 +206,7 @@ class SentencePair:
         self.wsim=(Aoverlap+Boverlap)*1.0/(len(self.tokensA)+len(self.tokensB))
 
     def compose(self,dict, method,metric):
+        print "Warning - using deprecated method SentPair.compose()"
         self.comp=method
         self.metric=metric
         if method=="additive":
@@ -216,6 +217,7 @@ class SentencePair:
         self.getsentsim()
 
     def add_compose(self,vectordict):
+        print "Warning - using deprecated method SentPair.add_compose()"
         for sent in ['A','B']:
             self.sentvector[sent]=WordVector((sent,'S'))
             lemmalist=self.returncontentlemmas(sent)
