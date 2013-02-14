@@ -3,9 +3,9 @@ __author__ = 'juliewe'
 import sys
 from stsdata import STSData
 
-testing=False
+testing=True
 at_home=False
-on_apollo=True
+on_apollo=False
 
 #uni filenames
 parent="/Users/juliewe/Documents/workspace/STS/data/"
@@ -73,7 +73,7 @@ mydata.readgs(gsdirname)
 sys.stdout.flush()
 mydata.readvectors(vectorfilename)
 sys.stdout.flush()
-mydata.composeall(comptype,metric)
+mydata.composeall_faster(comptype,metric)
 #mydata.testread()
 do_correlation(mydata)
 

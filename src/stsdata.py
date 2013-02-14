@@ -36,6 +36,8 @@ class STSData:
         self.show=graphson
         self.updated=0
         self.testing=testing
+        self.comp=""
+        self.metric=""
 
     def readdata(self,parentname):
         dirlist = glob.glob(parentname+'/*')
@@ -281,7 +283,7 @@ class STSData:
             if (self.testing==True and linesread>10):
 
                 break
-            if (linesread%100 == 0):
+            if (linesread%1000 == 0):
                 print "Read "+str(linesread)+" lines and updated "+str(self.updated)+" vectors"
                 sys.stdout.flush()
 
@@ -313,3 +315,26 @@ class STSData:
             sys.stdout.flush()
         #r = Parallel(n_jobs=4)(delayed (pair.compose(self.vectordict,method,metric)) for pair in self.pairset.values())
             #parallel version of compise and compute sim
+
+    def composeall_faster(self,method,metric):
+        self.comp=method
+        self.metric=metric
+        if method=="additive":
+            for pair in self.pairset.values():
+                self.compose_faster(pair)
+                sys.stdout.flush()
+                pair.getsentsim()
+
+        else:
+            print "Unknown method of composition "+method
+
+
+    def compose_faster(self,pair):
+        pair.comp=self.comp
+        pair.metric=self.metric
+        for sent in ['A','B']:
+            pair.sentvector[sent]=WordVector((sent,'S'))
+            lemmalist=pair.returncontentlemmas(sent)
+            for tuple in lemmalist:
+                if tuple in self.vectordict:
+                    pair.sentvector[sent].add(self.vectordict[tuple])

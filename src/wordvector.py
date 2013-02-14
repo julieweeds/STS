@@ -39,7 +39,7 @@ class WordVector:
 
 
     def update(self,featurelist):
-        print "Updating "+self.word+"/"+self.pos
+        #print "Updating "+self.word+"/"+self.pos
         while(len(featurelist)>0):
 
             self.addfeature(featurelist.pop(),featurelist.pop())
