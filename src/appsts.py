@@ -4,7 +4,7 @@ import sys
 from stsdata import STSData
 
 import conf
-(testing,at_home,on_apollo)=conf.configure()
+(testing,at_home,on_apollo,windows,comptype,metric)=conf.configure()
 
 
 #uni filenames
@@ -35,8 +35,8 @@ if testing:
     graphson=False
     vectorfilename=vectorfilename+"_test"
 
-comptype="additive"
-metric="cosine"
+#comptype="additive"
+#metric="cosine"
 
 
 def do_correlation(mydata):
@@ -67,7 +67,10 @@ def do_correlation(mydata):
             print "Average cross-validation correlation for "+f+" with "+type+" similarity is "+str(av)+", sd="+str(sd)+", n="+str(n)
             print "95% confidence interval is "+str(av)+" +- "+str(int)
 
-mydata = STSData(graphson,testing)
+mydata = STSData(graphson,testing,windows)
+print "Configuration set to windows = ", windows
+print "Composition type = ", comptype
+print "Similarity metric = ", metric
 mydata.readdata(datadirname)
 mydata.readgs(gsdirname)
 sys.stdout.flush()

@@ -5,4 +5,13 @@ def configure():
 #location
     at_home=False
     on_apollo=True
-    return(testing,at_home,on_apollo)
+#feature_type
+    windows=True
+#composition type
+    comptype="additive"
+#similarity metric
+    metric="cosine"
+
+
+    return(testing,at_home,on_apollo,windows,comptype,metric)
+

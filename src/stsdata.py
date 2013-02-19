@@ -22,7 +22,7 @@ class STSData:
     gssetPATT = re.compile('.*STS.gs.(.*).txt')
     wordposPATT = re.compile('(.*)/(.*)')
 
-    def __init__(self,graphson,testing):
+    def __init__(self,graphson,testing,windows):
         self.pairset={} #label is setid_fileid
         self.vectordict={} #mapping from (word,POS) tuples to wordvectors
         self.sid=0
@@ -42,6 +42,7 @@ class STSData:
         self.fkeys=[] #list (to be sorted) of all features to
         self.fk_idx={} #feature --> dimension
         self.dim=0
+        WordVector.windows=windows
 
     def readdata(self,parentname):
         dirlist = glob.glob(parentname+'/*')
@@ -241,6 +242,7 @@ class STSData:
         if excl==1 and self.show==True:
             mytitle="Correlation for: "+subset+": "+str(excl)+": "+type
             self.showpoly(x,y,numpy.poly1d(numpy.polyfit(x,y,1)),mytitle,pr,5,5)
+        print pr
         return pr
 
 
