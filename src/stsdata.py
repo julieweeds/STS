@@ -217,6 +217,7 @@ class STSData:
     def testpoly(self,subset,excl,type):
 
         thispoly = self.fitpoly(subset,excl,type)
+        print thispoly
 
         fileid =1
         predictions=[]
@@ -238,6 +239,7 @@ class STSData:
 
         x=numpy.array(predictions)
         y=numpy.array(gs)
+        print len(x),len(y)
         pr = stats.spearmanr(x,y)
         if excl==1 and self.show==True:
             mytitle="Correlation for: "+subset+": "+str(excl)+": "+type
