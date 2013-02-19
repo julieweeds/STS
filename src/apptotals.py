@@ -4,7 +4,7 @@ from featuretotals import Totals
 ###filenames local
 #dirname = "/Volumes/research/calps/data3/juliewe/exp6-12/"
 ### apollo
-dirname = "/mnt/lustre/scratch/inf/juliewe/STS/data/vectors_gw_filt"
+dirname = "/mnt/lustre/scratch/inf/juliewe/STS/data/vectors_gw_filt/"
 filename = "vectors"
 
 inputname = dirname + filename
