@@ -306,7 +306,8 @@ class STSData:
             wordpos=(matchobj.group(1),matchobj.group(2))
         else:
             print "Error with vector file matching "+featurelist[0]
-            exit(1)
+            #this could be "__FILTERED" so ignore line and carry on
+            return
 
         #if len(featurelist)>WordVector.dim:
          #   WordVector.dim=len(featurelist)
