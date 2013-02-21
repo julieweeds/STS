@@ -6,7 +6,7 @@ def configure():
     at_home=False
     on_apollo=True
 #feature_type
-    windows=True
+    windows=False
 #filtered vectors
     filtered=True
 #composition type

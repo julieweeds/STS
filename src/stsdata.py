@@ -350,17 +350,17 @@ class STSData:
     def makearrays(self):
         #need to convert a word vector which stores a dictionary of features into a sparse array based on fk_idx
         for wordvector in self.vectordict.values():
-            #wordvector.array=lil_matrix((1,self.dim))
+
             temparray = numpy.zeros(self.dim)
             for feature in wordvector.vector.keys():
 
                 col=self.fk_idx[feature]
                 score=wordvector.vector[feature]
-#                wordvector.array[col,1]=score
+#
                 temparray[col]=score
-            print temparray
+           # print temparray
             wordvector.array = sparse.csr_matrix(temparray)
-            print wordvector.array.data
+            #print wordvector.array.data
            # print "Converted "+wordvector.word+"/"+wordvector.pos
 
 
@@ -380,9 +380,9 @@ class STSData:
                 sys.stdout.flush()
                 pair.getsentsim()
                 donepairs+=1
-                if donepairs%10 ==0:
-                    print "Completed composition and similarity calculations for "+str(donepairs)+" pairs"
-                    break
+                #if donepairs%10 ==0:
+                 #   print "Completed composition and similarity calculations for "+str(donepairs)+" pairs"
+                 #   break
 
 
         else:
@@ -396,10 +396,10 @@ class STSData:
             pair.sentvector[sent]=WordVector((sent,'S'))
             pair.sentvector[sent].array=sparse.csr_matrix(numpy.zeros(self.dim)) #initialise sentence array as zeroes
             lemmalist=pair.returncontentlemmas(sent)
-            print lemmalist
+            #print lemmalist
             for tuple in lemmalist:
                 if tuple in self.vectordict:
-                    if len(self.vectordict[tuple].vector)>0:
-                        print tuple, "yes"
+                  #  if len(self.vectordict[tuple].vector)>0:
+                   #     print tuple, "yes"
                     pair.sentvector[sent].add_array(self.vectordict[tuple])
-            pair.sentvector[sent].display()
+            #pair.sentvector[sent].display()
