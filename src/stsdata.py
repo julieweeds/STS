@@ -358,8 +358,9 @@ class STSData:
                 score=wordvector.vector[feature]
 #                wordvector.array[col,1]=score
                 temparray[col]=score
+            print temparray
             wordvector.array = sparse.csr_matrix(temparray)
-            print wordvector.array
+            print wordvector.array.data
            # print "Converted "+wordvector.word+"/"+wordvector.pos
 
 
