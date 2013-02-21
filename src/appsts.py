@@ -18,7 +18,10 @@ if on_apollo:
 
 datadirname=parent+"trial/STS2012-train/STSinput-tagged"
 gsdirname=parent+"trial/STS2012-train/gs"
-vectorfilename=parent+"vectors_gw_filt/vectors_mi"
+if filtered==True:
+    vectorfilename=parent+"vectors_gw_filt/vectors_mi"
+else:
+    vectorfilename=parent+"allvectors/vectors_mi"
 
 cv_param=10
 cv_repeat=1

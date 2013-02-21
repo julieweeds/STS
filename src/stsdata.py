@@ -394,7 +394,9 @@ class STSData:
             pair.sentvector[sent]=WordVector((sent,'S'))
             pair.sentvector[sent].array=sparse.csr_matrix(numpy.zeros(self.dim)) #initialise sentence array as zeroes
             lemmalist=pair.returncontentlemmas(sent)
+            print lemmalist
             for tuple in lemmalist:
                 if tuple in self.vectordict:
+                    print tuple, "yes"
                     pair.sentvector[sent].add_array(self.vectordict[tuple])
             pair.sentvector[sent].display()
