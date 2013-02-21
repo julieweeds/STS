@@ -217,16 +217,23 @@ class STSData:
     def testpoly(self,subset,excl,type):
 
         thispoly = self.fitpoly(subset,excl,type)
-        #print thispoly
+        print thispoly
 
         fileid =1
         predictions=[]
         gs=[]
         carryon=True
+        noones=0
+        nozeroes=0
+
         while carryon == True:
             label = subset+"_"+str(fileid)
             if label in self.pairset.keys():
                 if self.pairset[label].cvsplit== excl:
+                    if self.pairset[label].sim(type)==1:
+                        noones+=1
+                    if self.pairset[label].sim(type)==0:
+                        nozeroes+=1
                     predictions.append(thispoly(self.pairset[label].sim(type)))
                     gs.append(self.pairset[label].gs)
                     fileid+=1
@@ -240,6 +247,8 @@ class STSData:
         x=numpy.array(predictions)
         y=numpy.array(gs)
         print len(x),len(y)
+        sumzeroone=nozeroes+noones
+        print nozeroes, noones, sumzeroone
         print x,y
         pr = stats.spearmanr(x,y)
         if excl==1 and self.show==True:
@@ -253,11 +262,9 @@ class STSData:
         print "Testing"
         print "Files read = "+str(self.filesread)
         print "Pairs stored = "+str(len(self.pairset))
-        #for p in self.pairset.values():
-          #  p.display()
-          #  if p.lcsim<0:
-           #     print "Error"
-           #     exit(1)
+        for p in self.pairset.values():
+            p.display()
+
 
 
         #print "Average lemma overlap of content words is "+str(self.averagesim("lemma_content","all"))

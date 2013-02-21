@@ -21,7 +21,7 @@ gsdirname=parent+"trial/STS2012-train/gs"
 vectorfilename=parent+"vectors_gw_filt/vectors_mi"
 
 cv_param=10
-cv_repeat=10
+cv_repeat=1
 k=1.96 #for 95% confidence intervals
 files=["MSRpar","MSRvid","SMTeuroparl"]
 sims=["lemma_content","sent_comp"]
@@ -77,6 +77,6 @@ sys.stdout.flush()
 mydata.readvectors(vectorfilename)
 sys.stdout.flush()
 mydata.composeall_faster(comptype,metric)
-#mydata.testread()
+mydata.testread()
 do_correlation(mydata)
 
