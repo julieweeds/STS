@@ -4,7 +4,7 @@ import sys
 from stsdata import STSData
 
 import conf
-(testing,at_home,on_apollo,windows,comptype,metric)=conf.configure()
+(testing,at_home,on_apollo,windows,filtered,comptype,metric)=conf.configure()
 
 
 #uni filenames

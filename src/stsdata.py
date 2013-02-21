@@ -380,7 +380,7 @@ class STSData:
                 donepairs+=1
                 if donepairs%10 ==0:
                     print "Completed composition and similarity calculations for "+str(donepairs)+" pairs"
-                    exit()
+                    break
 
 
         else:
@@ -397,4 +397,4 @@ class STSData:
             for tuple in lemmalist:
                 if tuple in self.vectordict:
                     pair.sentvector[sent].add_array(self.vectordict[tuple])
-            print pair.sentvector[sent]
+            pair.sentvector[sent].display()

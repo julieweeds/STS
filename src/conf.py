@@ -7,11 +7,13 @@ def configure():
     on_apollo=True
 #feature_type
     windows=True
+#filtered vectors
+    filtered=True
 #composition type
     comptype="additive"
 #similarity metric
     metric="cosine"
 
 
-    return(testing,at_home,on_apollo,windows,comptype,metric)
+    return(testing,at_home,on_apollo,windows,filtered,comptype,metric)
 
