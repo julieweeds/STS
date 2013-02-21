@@ -1,7 +1,7 @@
 def configure():
 
 #mode
-    testing=False
+    testing=True
 #location
     at_home=False
     on_apollo=True

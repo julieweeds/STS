@@ -33,7 +33,7 @@ if testing:
     cv_param=5
     cv_repeat=1
     graphson=False
-    vectorfilename=vectorfilename+"_test"
+    #vectorfilename=vectorfilename+"_test"
 
 #comptype="additive"
 #metric="cosine"
@@ -78,5 +78,5 @@ mydata.readvectors(vectorfilename)
 sys.stdout.flush()
 mydata.composeall_faster(comptype,metric)
 mydata.testread()
-do_correlation(mydata)
+#do_correlation(mydata)
 

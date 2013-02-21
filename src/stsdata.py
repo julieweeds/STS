@@ -112,7 +112,7 @@ class STSData:
 
     def averagesim(self,type,subset):
         label=type+"_"+subset
-        print label
+        #print label
         if label in self.simaverage:
             average = self.simaverage[label]
         else:
@@ -126,7 +126,7 @@ class STSData:
                 for p in self.pairset.values():
                     if (p.fid == subset):
                             total+=p.sim(type)
-                            print "average sim "+str(p.sim(type))
+                            #print "average sim "+str(p.sim(type))
                             count+=1
                             print count
 
@@ -296,8 +296,7 @@ class STSData:
         for line in instream:
             self.processvectorline(line.rstrip())
             linesread+=1
-            if (self.testing==True and linesread>10):
-
+            if (self.testing==True and linesread>1000):
                 break
             if (linesread%1000 == 0):
                 print "Read "+str(linesread)+" lines and updated "+str(self.updated)+" vectors"
@@ -379,8 +378,9 @@ class STSData:
                 sys.stdout.flush()
                 pair.getsentsim()
                 donepairs+=1
-                if donepairs%100 ==0:
+                if donepairs%10 ==0:
                     print "Completed composition and similarity calculations for "+str(donepairs)+" pairs"
+                    exit()
 
 
         else:
@@ -397,3 +397,4 @@ class STSData:
             for tuple in lemmalist:
                 if tuple in self.vectordict:
                     pair.sentvector[sent].add_array(self.vectordict[tuple])
+            print pair.sentvector[sent]
