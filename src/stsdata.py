@@ -296,8 +296,8 @@ class STSData:
         for line in instream:
             self.processvectorline(line.rstrip())
             linesread+=1
-            if (self.testing==True and linesread>1000):
-                break
+            #if (self.testing==True and linesread>1000):
+             #   break
             if (linesread%1000 == 0):
                 print "Read "+str(linesread)+" lines and updated "+str(self.updated)+" vectors"
                 sys.stdout.flush()
