@@ -247,14 +247,14 @@ class STSData:
         x=numpy.array(predictions)
         y=numpy.array(gs)
         #print len(x),len(y)
-        sumzeroone=nozeroes+noones
+        #sumzeroone=nozeroes+noones
         #print nozeroes, noones, sumzeroone
         #print x,y
         pr = stats.spearmanr(x,y)
         if excl==1 and self.show==True:
             mytitle="Correlation for: "+subset+": "+str(excl)+": "+type
             self.showpoly(x,y,numpy.poly1d(numpy.polyfit(x,y,1)),mytitle,pr,5,5)
-        print pr
+        #print pr
         return pr
 
 
