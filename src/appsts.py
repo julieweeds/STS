@@ -80,6 +80,6 @@ sys.stdout.flush()
 mydata.readvectors(vectorfilename)
 sys.stdout.flush()
 mydata.composeall_faster(comptype,metric)
-mydata.testread()
+#mydata.testread()
 #do_correlation(mydata)
 
