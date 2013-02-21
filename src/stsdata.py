@@ -397,6 +397,7 @@ class STSData:
             print lemmalist
             for tuple in lemmalist:
                 if tuple in self.vectordict:
-                    print tuple, "yes"
+                    if len(self.vectordict[tuple].vector)>0:
+                        print tuple, "yes"
                     pair.sentvector[sent].add_array(self.vectordict[tuple])
             pair.sentvector[sent].display()
