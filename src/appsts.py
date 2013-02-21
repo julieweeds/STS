@@ -24,7 +24,7 @@ else:
     vectorfilename=parent+"allvectors/vectors_mi"
 
 cv_param=10
-cv_repeat=1
+cv_repeat=10
 k=1.96 #for 95% confidence intervals
 files=["MSRpar","MSRvid","SMTeuroparl"]
 sims=["lemma_content","sent_comp"]
