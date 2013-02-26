@@ -21,7 +21,7 @@ class STSData:
     fileidPATT= re.compile('.*STSinput(.*).pair(.*)(.).tagged')
     gssetPATT = re.compile('.*STS.gs.(.*).txt')
     wordposPATT = re.compile('(.*)/(.*)')
-    metrics = ["additive","multiplicative"]
+    methods = ["additive","multiplicative"]
 
     def __init__(self,graphson,testing,windows):
         self.pairset={} #label is setid_fileid
@@ -377,7 +377,7 @@ class STSData:
     def composeall_faster(self,method,metric):
         self.comp=method
         self.metric=metric
-        if method in STSData.metrics:
+        if method in STSData.methods:
             donepairs=0
             for pair in self.pairset.values():
                 self.compose_faster(pair)
@@ -399,7 +399,7 @@ class STSData:
         for sent in ['A','B']:
             lemmalist=pair.returncontentlemmas(sent) #get all lemmas in sentence
             pair.sentvector[sent]=WordVector((sent,'S'))
-            if pair.metric == "multiplicative":
+            if pair.comp == "multiplicative":
                 pair.sentvector[sent].array=sparse.csr_matrix(numpy.ones(self.dim)) #initialise sentence array as ones
             else:  #assume additive
                 pair.sentvector[sent].array=sparse.csr_matrix(numpy.zeros(self.dim)) #initialise sentence array as zeroes
@@ -409,7 +409,7 @@ class STSData:
                 if tuple in self.vectordict:
                     if len(self.vectordict[tuple].vector)>0:  #only compose non-zero vectors
                     #     print tuple, "yes"
-                        if pair.metric == "multiplicative":
+                        if pair.comp == "multiplicative":
                             #pair.sentvector[sent].mult_array(self.vectordict[tuple])
                             pair.sentvector[sent].array=pair.sentvector[sent].array.multiply(self.vectordict[tuple].array)
                         else: #assume additive
