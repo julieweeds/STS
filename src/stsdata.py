@@ -129,7 +129,7 @@ class STSData:
                             total+=p.sim(type)
                             #print "average sim "+str(p.sim(type))
                             count+=1
-                            print count
+                            #print count
 
             average = total/count
             self.simaverage[label]=average
@@ -262,23 +262,25 @@ class STSData:
     def testread(self):
         print "Testing"
         print "Files read = "+str(self.filesread)
-        print "Pairs stored = "+str(len(self.pairset))
-        for p in self.pairset.values():
-            p.display()
+        #print "Pairs stored = "+str(len(self.pairset))
+        #for p in self.pairset.values():
+        #    p.display()
 
 
 
         #print "Average lemma overlap of content words is "+str(self.averagesim("lemma_content","all"))
-        #print "Average lemma overlap of content words for europarl data is "+str(self.averagesim("lemma_content","SMTeuroparl"))
+        print "Average lemma overlap of content words for europarl data is "+str(self.averagesim("lemma_content","SMTeuroparl"))
         print "Average lemma overlap of content words for MSRpar data is "+str(self.averagesim("lemma_content","MSRpar"))
-        #print "Average lemma overlap of content words for MSRvid data is "+str(self.averagesim("lemma_content","MSRvid"))
+        print "Average lemma overlap of content words for MSRvid data is "+str(self.averagesim("lemma_content","MSRvid"))
 
         #print "Average gs overlap is "+str(self.averagesim("gs","all"))
         #print "Average gs overlap for europarl data is "+str(self.averagesim("gs","SMTeuroparl"))
         print "Average gs overlap for MSRpar data is "+str(self.averagesim("gs","MSRpar"))
         #print "Average gs overlap for MSRvid data is "+str(self.averagesim("gs","MSRvid"))
 
-        print "Average composed sentence similarity for MSRpardata is "+str(self.averagesim("sent_comp","MSRpar"))
+        print "Average composed sentence similarity for europarl data is "+str(self.averagesim("sent_comp","SMTeuroparl"))
+        print "Average composed sentence similarity for MSRpar data is "+str(self.averagesim("sent_comp","MSRpar"))
+        print "Average composed sentence similarity for MSRvid data is "+str(self.averagesim("sent_comp","MSRvid"))
 
     def vectordict_init(self):
         for pair in self.pairset.values():
@@ -405,12 +407,12 @@ class STSData:
             #print lemmalist
             for tuple in lemmalist:
                 if tuple in self.vectordict:
-                  #  if len(self.vectordict[tuple].vector)>0:
-                   #     print tuple, "yes"
-                    if pair.metric == "multiplicative":
-                        #pair.sentvector[sent].mult_array(self.vectordict[tuple])
-                        pair.sentvector[sent].array=pair.sentvector[sent].array.multiply(self.vectordict[tuple].array)
-                    else: #assume additive
-                        #pair.sentvector[sent].add_array(self.vectordict[tuple])
-                        pair.sentvector[sent].array=pair.sentvector[sent].array + self.vectordict[tuple].array
+                    if len(self.vectordict[tuple].vector)>0:  #only compose non-zero vectors
+                    #     print tuple, "yes"
+                        if pair.metric == "multiplicative":
+                            #pair.sentvector[sent].mult_array(self.vectordict[tuple])
+                            pair.sentvector[sent].array=pair.sentvector[sent].array.multiply(self.vectordict[tuple].array)
+                        else: #assume additive
+                            #pair.sentvector[sent].add_array(self.vectordict[tuple])
+                            pair.sentvector[sent].array=pair.sentvector[sent].array + self.vectordict[tuple].array
             #pair.sentvector[sent].display()
