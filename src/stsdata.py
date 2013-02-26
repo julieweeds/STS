@@ -409,8 +409,8 @@ class STSData:
                    #     print tuple, "yes"
                     if pair.metric == "multiplicative":
                         #pair.sentvector[sent].mult_array(self.vectordict[tuple])
-                        pair.sentvector[sent].array.multiply(self.vectordict[tuple].array)
+                        pair.sentvector[sent].array=pair.sentvector[sent].array.multiply(self.vectordict[tuple].array)
                     else: #assume additive
                         #pair.sentvector[sent].add_array(self.vectordict[tuple])
-                        pair.sentvector[sent].array + self.vectordict[tuple].array
+                        pair.sentvector[sent].array=pair.sentvector[sent].array + self.vectordict[tuple].array
             #pair.sentvector[sent].display()

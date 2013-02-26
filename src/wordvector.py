@@ -97,8 +97,12 @@ class WordVector:
 
     def display(self):
         print self.word+"/"+self.pos
-        print self.vector
-        print self.width,self.length2,self.length
+        if self.pos =="S":
+            print self.array
+            print self.length
+        else:
+            print self.vector
+            print self.width,self.length2,self.length
 
     def findsim(self,avector,metric):
         if metric =="cosine":
@@ -135,7 +139,7 @@ class WordVector:
 
         if self.length*avector.length == 0:
             sim =0
-            #print "Warning: 0 length vectors"
+            print "Warning: 0 length arrays"
         else:
             dotprod = self.array.multiply(avector.array).sum()
             sim = dotprod/(self.length*avector.length)
