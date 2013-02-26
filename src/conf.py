@@ -30,6 +30,8 @@ def configure(arguments):
         elif argument == "home":
             on_apollo=False
             at_home=True
+        elif argument == "multiplicative"
+            comptype="multiplicative"
 
     return(testing,at_home,on_apollo,windows,filtered,comptype,metric)
 

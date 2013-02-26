@@ -21,6 +21,7 @@ class STSData:
     fileidPATT= re.compile('.*STSinput(.*).pair(.*)(.).tagged')
     gssetPATT = re.compile('.*STS.gs.(.*).txt')
     wordposPATT = re.compile('(.*)/(.*)')
+    metrics = ["additive","multiplicative"]
 
     def __init__(self,graphson,testing,windows):
         self.pairset={} #label is setid_fileid
@@ -230,10 +231,10 @@ class STSData:
             label = subset+"_"+str(fileid)
             if label in self.pairset.keys():
                 if self.pairset[label].cvsplit== excl:
-                    if self.pairset[label].sim(type)==1:
-                        noones+=1
-                    if self.pairset[label].sim(type)==0:
-                        nozeroes+=1
+                    #if self.pairset[label].sim(type)==1:
+                      #  noones+=1
+                    #if self.pairset[label].sim(type)==0:
+                      #  nozeroes+=1
                     predictions.append(thispoly(self.pairset[label].sim(type)))
                     gs.append(self.pairset[label].gs)
                     fileid+=1
@@ -374,7 +375,7 @@ class STSData:
     def composeall_faster(self,method,metric):
         self.comp=method
         self.metric=metric
-        if method=="additive":
+        if method in STSData.metrics:
             donepairs=0
             for pair in self.pairset.values():
                 self.compose_faster(pair)
@@ -394,13 +395,22 @@ class STSData:
         pair.comp=self.comp
         pair.metric=self.metric
         for sent in ['A','B']:
+            lemmalist=pair.returncontentlemmas(sent) #get all lemmas in sentence
             pair.sentvector[sent]=WordVector((sent,'S'))
-            pair.sentvector[sent].array=sparse.csr_matrix(numpy.zeros(self.dim)) #initialise sentence array as zeroes
-            lemmalist=pair.returncontentlemmas(sent)
+            if pair.metric == "multiplicative":
+                pair.sentvector[sent].array=sparse.csr_matrix(numpy.ones(self.dim)) #initialise sentence array as ones
+            else:  #assume additive
+                pair.sentvector[sent].array=sparse.csr_matrix(numpy.zeros(self.dim)) #initialise sentence array as zeroes
+
             #print lemmalist
             for tuple in lemmalist:
                 if tuple in self.vectordict:
                   #  if len(self.vectordict[tuple].vector)>0:
                    #     print tuple, "yes"
-                    pair.sentvector[sent].add_array(self.vectordict[tuple])
+                    if pair.metric == "multiplicative":
+                        #pair.sentvector[sent].mult_array(self.vectordict[tuple])
+                        pair.sentvector[sent].array.multiply(self.vectordict[tuple].array)
+                    else: #assume additive
+                        #pair.sentvector[sent].add_array(self.vectordict[tuple])
+                        pair.sentvector[sent].array + self.vectordict[tuple].array
             #pair.sentvector[sent].display()

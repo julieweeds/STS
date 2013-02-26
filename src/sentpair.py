@@ -212,6 +212,8 @@ class SentencePair:
         if method=="additive":
 
             self.add_compose(dict)
+
+
         else:
             print "Unknown method of composition "+method
         self.getsentsim()

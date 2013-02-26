@@ -75,12 +75,19 @@ class WordVector:
                     self.length2+=score*score
             self.length=pow(self.length2,0.5)
 
-    def add_array(self,avector):
+    def add_array(self,avector): #unnecessary wrapper method for add if initialised properly
         #replacement for add working with sparse arrays rather than dictionaries
         if self.array=="":
             self.array=avector.array
         else:
             self.array = self.array + avector.array
+
+    def mult_array(self,avector):  #unnecessary wrapper method for multiply if initialised properly
+        if self.array=="":
+            self.array=avector.array
+        else:
+            self.array = self.array.multiply(avector.array)
+
 
     def getfeature(self,feature):
         if feature in self.vector.keys():
