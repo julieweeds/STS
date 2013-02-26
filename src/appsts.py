@@ -3,9 +3,10 @@ __author__ = 'juliewe'
 import sys
 from stsdata import STSData
 
+#set up configuration. Import configuration function
 import conf
-(testing,at_home,on_apollo,windows,filtered,comptype,metric)=conf.configure()
-
+#pass commandline arguments
+(testing,at_home,on_apollo,windows,filtered,comptype,metric)=conf.configure(sys.argv)
 
 #uni filenames
 parent="/Users/juliewe/Documents/workspace/STS/data/"

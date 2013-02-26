@@ -22,7 +22,7 @@ class WordVector:
 
     def addfeature(self,feature,score):
         if float(score) <=0:
-            return
+            return False
         else:
             if feature in self.vector:
                 print "Error "+self.word+" already has feature "+feature
@@ -34,11 +34,17 @@ class WordVector:
                         self.vector[feature]=float(score)
                         self.width+=1
                         self.length2+=float(score)*float(score)
+                        return True
+                    else:
+                        return False
                 else:
                     if WordVector.windows==False:
                         self.vector[feature]=float(score)
                         self.width+=1
                         self.length2+=float(score)*float(score)
+                        return True
+                    else:
+                        return False
 
 
 #    def update(self,featurelist):
@@ -71,7 +77,10 @@ class WordVector:
 
     def add_array(self,avector):
         #replacement for add working with sparse arrays rather than dictionaries
-        self.array = self.array + avector.array
+        if self.array=="":
+            self.array=avector.array
+        else:
+            self.array = self.array + avector.array
 
     def getfeature(self,feature):
         if feature in self.vector.keys():

@@ -332,8 +332,9 @@ class STSData:
         while(len(featurelist)>0):
             f=featurelist.pop()
             sc=featurelist.pop()
-            self.vectordict[wordpos].addfeature(f,sc)
-            self.allfeatures[f]=1
+            added=self.vectordict[wordpos].addfeature(f,sc)
+            if added:
+                self.allfeatures[f]=1
         self.vectordict[wordpos].length=pow(self.vectordict[wordpos].length2,0.5)
 
     def makematrix(self):
