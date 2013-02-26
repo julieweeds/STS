@@ -22,6 +22,7 @@ class STSData:
     gssetPATT = re.compile('.*STS.gs.(.*).txt')
     wordposPATT = re.compile('(.*)/(.*)')
     methods = ["additive","multiplicative"]
+    setmethods = ["avg_max","geo_max"]
 
     def __init__(self,graphson,testing,windows):
         self.pairset={} #label is setid_fileid
@@ -39,6 +40,7 @@ class STSData:
         self.testing=testing
         self.comp=""
         self.metric=""
+        self.setsim=""
         self.allfeatures={} #dictionary of all feature dimenesions
         self.fkeys=[] #list (to be sorted) of all features to
         self.fk_idx={} #feature --> dimension
@@ -374,7 +376,7 @@ class STSData:
 #            sys.stdout.flush()
 
 
-    def composeall_faster(self,method,metric):
+    def composeall_faster(self,method,metric): #compose each sentence in each pair and compute similarity of pair
         self.comp=method
         self.metric=metric
         if method in STSData.methods:
@@ -416,3 +418,72 @@ class STSData:
                             #pair.sentvector[sent].add_array(self.vectordict[tuple])
                             pair.sentvector[sent].array=pair.sentvector[sent].array + self.vectordict[tuple].array
             #pair.sentvector[sent].display()
+
+    def set_simall(self,method,metric):
+        self.metric=metric
+        self.setsim=method
+        if self.setsim in STSData.setmethods:
+            donepairs=0
+            for pair in self.pairset.values():
+                self.set_sim(pair)
+                sys.stdout.flush()
+                donepairs+=1
+                #if donepairs%10 ==0:
+                #   print "Completed composition and similarity calculations for "+str(donepairs)+" pairs"
+                #   break
+
+
+        else:
+            print "Unknown method of set similarity "+self.setsim
+
+    def set_sim(self,pair):
+        pair.metric=self.metric
+        pair.setsim=self.setsim
+        label="set_"+pair.metric+"_"+pair.comp
+        if label in pair.sentsim.keys():
+            sim = pair.sentsim[label]
+        else:
+            lemmalistA=pair.returncontentlemmas('A') #get all lemmas in sentence A
+            lemmalistB=pair.returncontentlemmas('B') #get all lemmas in sentence B
+
+            #compute set sim A->B
+            sim1= set_sim1(lemmalistA,lemmalistB)
+            #compute set sim B->A
+            sim2= set_sim1(lemmalistB,lemmalistA)
+            #compute arithmetic mean
+            sim =(sim1+sim2)/2
+
+            self.sentsim[label]=sim
+        return sim
+
+    def set_sim1(self,lemmalistA,lemmalistB): #asymmetric set sim from A to B
+
+        if self.setsim=="geo_max":
+            total =1
+        else:
+            total=0
+        count=0
+        for lemmaA in lemmalistA:
+            if lemmaA in self.vectordict:
+                if len(self.vectordict[lemmaA])>0: #only consider non-zero vectors
+                    maxsim=0
+                    for lemmaB in lemmalistB: #find maximally similar lemma in B
+                        if lemmaB in self.vectordict:
+                            if len(self.vectordict[lemmaB])>0:
+                                thissim=self.vectordict[lemmaA].findsim(self.vectordict[lemmaB],self.metric)
+                                if(thissim>maxsim):
+                                    maxsim=thissim
+                    if self.setsim=="geo_max":
+                        total = total * maxsim
+                    else :
+                        total = total + maxsim
+
+                    count += 1
+        if count==0:
+            sim = 0
+        else:
+            if self.setsim=="geo_max":
+                sim = pow(total,(1/count))
+            else:
+                sim = total/count
+        return sim

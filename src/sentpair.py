@@ -26,6 +26,7 @@ class SentencePair:
         self.sentsim={}
         self.metric=""
         self.comp=""
+        self.setsim=""
         self.testing=testing
 
     def addword(self,word,sentid):
@@ -73,11 +74,14 @@ class SentencePair:
                         if type=="token_content":
                             ressim=self.tokcontsim()
                         else:
-                            if type=="sent_comp":
+                            if type=="sent_comp": #would be better to have metric and method in type?
                                 ressim=self.getsentsim()
 
                             else:
-                                print "Error - unknown sim type: "+type
+                                if type =="sent_set":
+                                    ressim=self.setsim()
+                                else:
+                                    print "Error - unknown sim type: "+type
 #        if ressim <0 :
  #           print type+" similarity error for "
  #           self.display()
@@ -239,4 +243,13 @@ class SentencePair:
             sim = self.sentvector['A'].findsim(self.sentvector['B'],self.metric)
             self.sentsim[label]=sim
 #        print "getsentsim "+str(sim)
+        return sim
+
+    def setsim(self):
+        label = "set_"+self.metric + "_"+self.setsim
+        if label in self.sentsim.keys():
+            sim=self.sentsim[label]
+        else:
+            print "Fatal Error - have not computed set similarities"
+            exit()
         return sim

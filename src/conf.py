@@ -2,10 +2,10 @@ def configure(arguments):
 
 #set defaults
 #mode
-    testing=False
+    testing=True
 #location
     at_home=False
-    on_apollo=True
+    on_apollo=False
 #feature_type
 
     windows=True
@@ -15,6 +15,8 @@ def configure(arguments):
     comptype="additive"
 #similarity metric
     metric="cosine"
+#set similarity method
+    setsim="avg_max"
 
 #override with command line arguments
     for argument in arguments:
@@ -34,6 +36,10 @@ def configure(arguments):
             comptype="multiplicative"
         elif argument == "additive":
             comptype ="additive"
+        elif argument == "geo_max":
+            setsim="geo_max"
+        elif argument == "avg_max":
+            setsim="avg_max"
 
-    return(testing,at_home,on_apollo,windows,filtered,comptype,metric)
+    return(testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim)
 

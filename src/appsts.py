@@ -6,7 +6,7 @@ from stsdata import STSData
 #set up configuration. Import configuration function
 import conf
 #pass commandline arguments
-(testing,at_home,on_apollo,windows,filtered,comptype,metric)=conf.configure(sys.argv)
+(testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim)=conf.configure(sys.argv)
 
 #uni filenames
 parent="/Users/juliewe/Documents/workspace/STS/data/"
@@ -28,11 +28,11 @@ cv_param=10
 cv_repeat=10
 k=1.96 #for 95% confidence intervals
 files=["MSRpar","MSRvid","SMTeuroparl"]
-sims=["lemma_content","sent_comp"]
+sims=["lemma_content","sent_set","sent_comp"]
 graphson=False
 
 if testing:
-    sims=["sent_comp"]
+    sims=["sent_sim"]
     files=["MSRpar"]
     cv_param=5
     cv_repeat=1
@@ -75,12 +75,14 @@ mydata = STSData(graphson,testing,windows)
 print "Configuration set to windows = ", windows
 print "Composition type = ", comptype
 print "Similarity metric = ", metric
+print "Set similarity method = ", setsim
 mydata.readdata(datadirname)
 mydata.readgs(gsdirname)
 sys.stdout.flush()
 mydata.readvectors(vectorfilename)
 sys.stdout.flush()
-mydata.composeall_faster(comptype,metric)
+mydata.set_simall(setsim,metric)
+#mydata.composeall_faster(comptype,metric)
 mydata.testread()
 do_correlation(mydata)
 
