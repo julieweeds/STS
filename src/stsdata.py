@@ -264,25 +264,27 @@ class STSData:
     def testread(self):
         print "Testing"
         print "Files read = "+str(self.filesread)
-        #print "Pairs stored = "+str(len(self.pairset))
-        #for p in self.pairset.values():
-        #    p.display()
+        if self.testing:
+            print "Pairs stored = "+str(len(self.pairset))
+            for p in self.pairset.values():
+                p.display()
 
 
 
         #print "Average lemma overlap of content words is "+str(self.averagesim("lemma_content","all"))
-        print "Average lemma overlap of content words for europarl data is "+str(self.averagesim("lemma_content","SMTeuroparl"))
         print "Average lemma overlap of content words for MSRpar data is "+str(self.averagesim("lemma_content","MSRpar"))
-        print "Average lemma overlap of content words for MSRvid data is "+str(self.averagesim("lemma_content","MSRvid"))
+        if self.testing == False:
+            print "Average lemma overlap of content words for europarl data is "+str(self.averagesim("lemma_content","SMTeuroparl"))
+            print "Average lemma overlap of content words for MSRvid data is "+str(self.averagesim("lemma_content","MSRvid"))
 
         #print "Average gs overlap is "+str(self.averagesim("gs","all"))
         #print "Average gs overlap for europarl data is "+str(self.averagesim("gs","SMTeuroparl"))
         print "Average gs overlap for MSRpar data is "+str(self.averagesim("gs","MSRpar"))
         #print "Average gs overlap for MSRvid data is "+str(self.averagesim("gs","MSRvid"))
 
-        print "Average composed sentence similarity for europarl data is "+str(self.averagesim("sent_comp","SMTeuroparl"))
-        print "Average composed sentence similarity for MSRpar data is "+str(self.averagesim("sent_comp","MSRpar"))
-        print "Average composed sentence similarity for MSRvid data is "+str(self.averagesim("sent_comp","MSRvid"))
+        #print "Average composed sentence similarity for europarl data is "+str(self.averagesim("sent_comp","SMTeuroparl"))
+        print "Average set sentence similarity for MSRpar data is "+str(self.averagesim("sent_set","MSRpar"))
+        #print "Average composed sentence similarity for MSRvid data is "+str(self.averagesim("sent_comp","MSRvid"))
 
     def vectordict_init(self):
         for pair in self.pairset.values():
@@ -428,9 +430,10 @@ class STSData:
                 self.set_sim(pair)
                 sys.stdout.flush()
                 donepairs+=1
-                #if donepairs%10 ==0:
-                #   print "Completed composition and similarity calculations for "+str(donepairs)+" pairs"
-                #   break
+                if self.testing:
+                    if donepairs%10 ==0:
+                       print "Completed set similarity calculations for "+str(donepairs)+" pairs"
+                       #break
 
 
         else:
