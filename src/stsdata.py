@@ -27,6 +27,7 @@ class STSData:
     def __init__(self,graphson,testing,windows):
         self.pairset={} #label is setid_fileid
         self.vectordict={} #mapping from (word,POS) tuples to wordvectors
+        self.wordcounts={} #count the number of times each (word,POS) tuple occurs in data for analysis
         self.sid=0
         self.filesread=0
         self.setid=""
@@ -297,10 +298,22 @@ class STSData:
             for sent in ['A','B']:
                for item in pair.returncontentlemmas(sent):
                     if item in self.vectordict:
-                        self.check=True
+                        #self.check=True
+                        self.wordcounts[item]+=1 #count how many times each item occurs for analysis
                     else:
                         self.vectordict[item]=WordVector(item)
+                        self.wordcounts[item]=1
         print "Vector dictionary initialised with "+str(len(self.vectordict.keys()))+" words"
+
+    def compute_token_coverage(self):
+        total=0
+        for word in self.wordcounts.keys():
+            freq=self.wordcounts[word]
+            total+=freq
+            if len(self.vectordict[word].vector)>0:
+                covered+=freq
+        coverage=covered*1.0/total
+        return coverage
 
     def readvectors(self,vectorfilename):
         print"Reading vector file"
@@ -317,7 +330,8 @@ class STSData:
 
         print "Read "+str(linesread)+" lines and updated "+str(self.updated)+" vectors"
         coverage=self.updated*100.0/len(self.vectordict.keys())
-        print "Vector dictionary coverage is "+str(coverage)+"%"
+        print "Vector dictionary type coverage is "+str(coverage)+"%"
+        print "Token coverage is "+str(self.compute_token_coverage())+"%"
         instream.close()
         print "Compressing vector dictionary representation"
         self.makematrix()
