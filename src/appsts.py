@@ -32,7 +32,7 @@ sims=["lemma_content","sent_set","sent_comp"]
 graphson=False
 
 if testing:
-    sims=["sent_sim"]
+    sims=["sent_set"]
     files=["MSRpar"]
     cv_param=5
     cv_repeat=1
@@ -81,8 +81,10 @@ mydata.readgs(gsdirname)
 sys.stdout.flush()
 mydata.readvectors(vectorfilename)
 sys.stdout.flush()
-mydata.set_simall(setsim,metric)
-#mydata.composeall_faster(comptype,metric)
+if "sent_set" in sims:
+    mydata.set_simall(setsim,metric)
+if "sent_comp" in sims:
+    mydata.composeall_faster(comptype,metric)
 mydata.testread()
 do_correlation(mydata)
 

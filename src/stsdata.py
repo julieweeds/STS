@@ -447,9 +447,9 @@ class STSData:
             lemmalistB=pair.returncontentlemmas('B') #get all lemmas in sentence B
 
             #compute set sim A->B
-            sim1= set_sim1(lemmalistA,lemmalistB)
+            sim1= self.set_sim1(lemmalistA,lemmalistB)
             #compute set sim B->A
-            sim2= set_sim1(lemmalistB,lemmalistA)
+            sim2= self.set_sim1(lemmalistB,lemmalistA)
             #compute arithmetic mean
             sim =(sim1+sim2)/2
 
