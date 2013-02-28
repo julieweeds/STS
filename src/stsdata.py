@@ -465,11 +465,11 @@ class STSData:
         count=0
         for lemmaA in lemmalistA:
             if lemmaA in self.vectordict:
-                if len(self.vectordict[lemmaA])>0: #only consider non-zero vectors
+                if len(self.vectordict[lemmaA].vector)>0: #only consider non-zero vectors
                     maxsim=0
                     for lemmaB in lemmalistB: #find maximally similar lemma in B
                         if lemmaB in self.vectordict:
-                            if len(self.vectordict[lemmaB])>0:
+                            if len(self.vectordict[lemmaB].vector)>0:
                                 thissim=self.vectordict[lemmaA].findsim(self.vectordict[lemmaB],self.metric)
                                 if(thissim>maxsim):
                                     maxsim=thissim
