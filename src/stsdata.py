@@ -28,6 +28,7 @@ class STSData:
         self.pairset={} #label is setid_fileid
         self.vectordict={} #mapping from (word,POS) tuples to wordvectors
         self.wordcounts={} #count the number of times each (word,POS) tuple occurs in data for analysis
+        self.uncovered={} #store words and counts not in thesaurus
         self.sid=0
         self.filesread=0
         self.setid=""
@@ -307,13 +308,23 @@ class STSData:
 
     def compute_token_coverage(self):
         total=0
+        covered=0
         for word in self.wordcounts.keys():
             freq=self.wordcounts[word]
             total+=freq
             if len(self.vectordict[word].vector)>0:
                 covered+=freq
+            else:
+                self.uncovered[word]=freq
         coverage=covered*1.0/total
+        self.analyse_uncovered()
         return coverage
+
+    def analyse_uncovered(self):
+        outlog=open('logfile','w')
+        for tuple in self.uncovered.keys():
+            outlog.write(tuple+'\n'+str(self.uncovered[tuple])+'\n')
+
 
     def readvectors(self,vectorfilename):
         print"Reading vector file"
