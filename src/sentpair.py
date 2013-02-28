@@ -46,7 +46,11 @@ class SentencePair:
             self.posB.append(pos)
 
     def display(self):
-        print self.fid, self.id, self.cvsplit, self.gs, self.sim('lemma'), self.sim('lemma_content'),self.sim('sent_comp')
+        print self.fid, self.id, self.cvsplit, self.gs, self.sim('lemma'), self.sim('lemma_content')
+        if 'sent_comp' in self.sentsim.keys():
+            print self.sim('sent_comp')
+        if 'sent_set' in self.sentsim.keys():
+            print self.sim('sent_set')
         #print self.tokensA
         #print self.tokensB
         print self.lemmasA

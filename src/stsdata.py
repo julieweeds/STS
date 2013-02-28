@@ -282,9 +282,15 @@ class STSData:
         print "Average gs overlap for MSRpar data is "+str(self.averagesim("gs","MSRpar"))
         #print "Average gs overlap for MSRvid data is "+str(self.averagesim("gs","MSRvid"))
 
-        #print "Average composed sentence similarity for europarl data is "+str(self.averagesim("sent_comp","SMTeuroparl"))
-        print "Average set sentence similarity for MSRpar data is "+str(self.averagesim("sent_set","MSRpar"))
-        #print "Average composed sentence similarity for MSRvid data is "+str(self.averagesim("sent_comp","MSRvid"))
+        if self.testing:
+            print "Average set sentence similarity for MSRpar data is "+str(self.averagesim("sent_set","MSRpar"))
+        else:
+            print "Average composed sentence similarity for europarl data is "+str(self.averagesim("sent_comp","SMTeuroparl"))
+            print "Average composed sentence similarity for MSRpar data is "+str(self.averagesim("sent_comp","MSRpar"))
+            print "Average composed sentence similarity for MSRvid data is "+str(self.averagesim("sent_comp","MSRvid"))
+            print "Average set sentence similarity for europarl data is "+str(self.averagesim("sent_set","SMTeuroparl"))
+            print "Average set sentence similarity for MSRpar data is "+str(self.averagesim("sent_set","MSRpar"))
+            print "Average set sentence similarity for MSRvid data is "+str(self.averagesim("sent_set","MSRvid"))
 
     def vectordict_init(self):
         for pair in self.pairset.values():
