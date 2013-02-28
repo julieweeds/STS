@@ -322,10 +322,23 @@ class STSData:
 
     def analyse_uncovered(self):
         outlog=open('logfile','w')
+        poscounts={} #count how many uncovered in each POS
         for tuple in self.uncovered.keys():
             (word,pos)=tuple
-            outlog.write(word+"/"+pos+"\t"+str(self.uncovered[tuple])+"\n"")
+            outlog.write(word+"/"+pos+"\t"+str(self.uncovered[tuple])+"\n")
+            if pos in poscounts.keys():
+                poscounts[pos]+=1
+            else:
+                poscounts[pos]=1
+
         outlog.close()
+        total=0
+        for pos in poscounts.keys():
+
+            print "Uncovered by POS:-"
+            print pos+" : " poscounts[pos]
+            total+=poscounts[pos]
+        print "Total "+total
 
 
     def readvectors(self,vectorfilename):
