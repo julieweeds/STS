@@ -311,7 +311,7 @@ class STSData:
             linesread+=1
             #if (self.testing==True and linesread>1000):
              #   break
-            if (linesread%1000 == 0):
+            if (linesread%10000 == 0):
                 print "Read "+str(linesread)+" lines and updated "+str(self.updated)+" vectors"
                 sys.stdout.flush()
 
@@ -394,8 +394,8 @@ class STSData:
                 sys.stdout.flush()
                 pair.getsentsim()
                 donepairs+=1
-                #if donepairs%10 ==0:
-                 #   print "Completed composition and similarity calculations for "+str(donepairs)+" pairs"
+                if donepairs%5:00 ==0:
+                    print "Completed composition and similarity calculations for "+str(donepairs)+" pairs"
                  #   break
 
 
@@ -436,9 +436,9 @@ class STSData:
                 self.set_sim(pair)
                 sys.stdout.flush()
                 donepairs+=1
-                if self.testing:
-                    if donepairs%100 ==0:
-                       print "Completed set similarity calculations for "+str(donepairs)+" pairs"
+                #if self.testing:
+                if donepairs%500 ==0:
+                    print "Completed set similarity calculations for "+str(donepairs)+" pairs"
                        #break
 
 
@@ -475,7 +475,7 @@ class STSData:
         for lemmaA in lemmalistA:
             if lemmaA in self.vectordict:
                 if len(self.vectordict[lemmaA].vector)>0: #only consider non-zero vectors
-                    maxsim=0
+                    maxsim=0.001 #smoothing - if no lemmas in B have entry or any similarity to this lemma
                     for lemmaB in lemmalistB: #find maximally similar lemma in B
                         if lemmaB in self.vectordict:
                             if len(self.vectordict[lemmaB].vector)>0:
@@ -492,7 +492,7 @@ class STSData:
             sim = 0
         else:
             if self.setsim=="geo_max":
-                sim = pow(total,(1/count))
+                sim = pow(total,(1.0/count))
             else:
                 sim = total/count
         return sim

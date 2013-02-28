@@ -139,7 +139,7 @@ class WordVector:
 
         if self.length*avector.length == 0:
             sim =0
-            print "Warning: 0 length arrays"
+            print "Warning: 0 length vectors"
         else:
             dotprod = self.array.multiply(avector.array).sum()
             sim = dotprod/(self.length*avector.length)
