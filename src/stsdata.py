@@ -323,7 +323,9 @@ class STSData:
     def analyse_uncovered(self):
         outlog=open('logfile','w')
         for tuple in self.uncovered.keys():
-            outlog.write(tuple+'\n'+str(self.uncovered[tuple])+'\n')
+            (word,pos)=tuple
+            outlog.write(word+"/"+pos+"\t"+str(self.uncovered[tuple])+"\n"")
+        outlog.close()
 
 
     def readvectors(self,vectorfilename):
