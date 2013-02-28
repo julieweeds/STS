@@ -486,8 +486,15 @@ class STSData:
                         total = total * maxsim
                     else :
                         total = total + maxsim
-
-                    count += 1
+                    count +=1
+                else:
+                    if lemmaA in lemmalistB: #check if word unknown to thesaurus is actually in the other sentence
+                        maxsim=1
+                        count += 1
+                        if self.setsim=="geo_max":
+                            total=total*maxsim
+                        else:
+                            total = total + maxsim
         if count==0:
             sim = 0
         else:
