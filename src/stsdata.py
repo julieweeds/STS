@@ -448,7 +448,7 @@ class STSData:
     def set_sim(self,pair):
         pair.metric=self.metric
         pair.setsim=self.setsim
-        label="set_"+pair.metric+"_"+pair.comp
+        label="set_"+pair.metric+"_"+pair.setsim
         if label in pair.sentsim.keys():
             sim = pair.sentsim[label]
         else:

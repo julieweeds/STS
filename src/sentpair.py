@@ -24,9 +24,9 @@ class SentencePair:
         self.tcsim=-1
         self.sentvector ={}
         self.sentsim={}
-        self.metric=""
-        self.comp=""
-        self.setsim=""
+        self.metric="none"
+        self.comp="none"
+        self.setsim="none"
         self.testing=testing
 
     def addword(self,word,sentid):
@@ -47,9 +47,11 @@ class SentencePair:
 
     def display(self):
         print self.fid, self.id, self.cvsplit, self.gs, self.sim('lemma'), self.sim('lemma_content')
-        if 'sent_comp' in self.sentsim.keys():
+        label=self.metric+"_"+self.comp
+        if label in self.sentsim.keys():
             print self.sim('sent_comp')
-        if 'sent_set' in self.sentsim.keys():
+        label = "set_"+self.metric+"_"+self.setsim
+        if label in self.sentsim.keys():
             print self.sim('sent_set')
         #print self.tokensA
         #print self.tokensB
