@@ -5,7 +5,7 @@ def configure(arguments):
     testing=True
 #location
     at_home=False
-    on_apollo=False
+    on_apollo=True
 #feature_type
 
     windows=True
