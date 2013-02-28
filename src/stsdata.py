@@ -437,7 +437,7 @@ class STSData:
                 sys.stdout.flush()
                 donepairs+=1
                 if self.testing:
-                    if donepairs%10 ==0:
+                    if donepairs%100 ==0:
                        print "Completed set similarity calculations for "+str(donepairs)+" pairs"
                        #break
 

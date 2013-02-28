@@ -83,7 +83,7 @@ class SentencePair:
 
                             else:
                                 if type =="sent_set":
-                                    ressim=self.setsim()
+                                    ressim=self.getsetsim()
                                 else:
                                     print "Error - unknown sim type: "+type
 #        if ressim <0 :
@@ -249,7 +249,7 @@ class SentencePair:
 #        print "getsentsim "+str(sim)
         return sim
 
-    def setsim(self):
+    def getsetsim(self):
         label = "set_"+self.metric + "_"+self.setsim
         if label in self.sentsim.keys():
             sim=self.sentsim[label]
