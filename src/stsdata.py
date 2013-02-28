@@ -394,7 +394,7 @@ class STSData:
                 sys.stdout.flush()
                 pair.getsentsim()
                 donepairs+=1
-                if donepairs%5:00 ==0:
+                if donepairs%500 ==0:
                     print "Completed composition and similarity calculations for "+str(donepairs)+" pairs"
                  #   break
 
