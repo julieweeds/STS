@@ -453,7 +453,7 @@ class STSData:
             #compute arithmetic mean
             sim =(sim1+sim2)/2
 
-            self.sentsim[label]=sim
+            pair.sentsim[label]=sim
         return sim
 
     def set_sim1(self,lemmalistA,lemmalistB): #asymmetric set sim from A to B
