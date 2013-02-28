@@ -2,7 +2,7 @@ def configure(arguments):
 
 #set defaults
 #mode
-    testing=True
+    testing=False
 #location
     at_home=False
     on_apollo=True
@@ -20,7 +20,9 @@ def configure(arguments):
 
 #override with command line arguments
     for argument in arguments:
-        if argument == "windows":
+        if argument == "testing":
+            testing = True
+        elif argument == "windows":
             windows =True
         elif argument == "deps":
             windows = False

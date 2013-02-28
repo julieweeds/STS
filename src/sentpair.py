@@ -57,8 +57,8 @@ class SentencePair:
         print self.posA
         print self.lemmasB
         print self.posB
-        self.sentvector['A'].display()
-        self.sentvector['B'].display()
+        #self.sentvector['A'].display()
+        #self.sentvector['B'].display()
 
     def sim(self,type):
         ressim =-1
