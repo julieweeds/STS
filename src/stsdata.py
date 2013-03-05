@@ -50,7 +50,7 @@ class STSData:
         self.fk_idx={} #feature --> dimension
         self.dim=0
         WordVector.windows=windows
-        simthreshold=threshold
+        STSData.simthreshold=threshold
 
     def readdata(self,parentname):
         dirlist = glob.glob(parentname+'/*')
@@ -293,9 +293,9 @@ class STSData:
             print "Average set sentence similarity for MSRpar data is "+str(self.averagesim("sent_set","MSRpar"))
             print "Average set sentence similarity for MSRvid data is "+str(self.averagesim("sent_set","MSRvid"))
             print "Average set sentence similarity for europarl data is "+str(self.averagesim("sent_set","SMTeuroparl"))
-            print "Average composed sentence similarity for MSRpar data is "+str(self.averagesim("sent_comp","MSRpar"))
-            print "Average composed sentence similarity for MSRvid data is "+str(self.averagesim("sent_comp","MSRvid"))
-            print "Average composed sentence similarity for europarl data is "+str(self.averagesim("sent_comp","SMTeuroparl"))
+            #print "Average composed sentence similarity for MSRpar data is "+str(self.averagesim("sent_comp","MSRpar"))
+            #print "Average composed sentence similarity for MSRvid data is "+str(self.averagesim("sent_comp","MSRvid"))
+            #print "Average composed sentence similarity for europarl data is "+str(self.averagesim("sent_comp","SMTeuroparl"))
 
     def vectordict_init(self):
         for pair in self.pairset.values():
