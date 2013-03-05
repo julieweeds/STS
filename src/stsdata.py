@@ -516,15 +516,15 @@ class STSData:
     def set_sim1(self,lemmalistA,lemmalistB): #asymmetric set sim from A to B
 
         if self.setsim=="geo_max":
-            total =1
+            total =1.0
         else:
-            total=0
-        count=0
+            total=0.0
+        count=0.0
         for lemmaA in lemmalistA:
             maxsim=STSData.minsim #smoothing - if no lemmas in B have entry or any similarity to this lemma
             if lemmaA in self.vectordict:
                 if lemmaA in lemmalistB: #check if word is actually in the other sentence
-                    maxsim=1
+                    maxsim=1.0
                 else:
                     if len(self.vectordict[lemmaA].vector)>0: #only consider non-zero vectors
 
@@ -541,6 +541,8 @@ class STSData:
                 print "Vector dictionary error for ", lemmaA
             if maxsim < STSData.simthreshold: #similarity threshold
                 maxsim = STSData.minsim #out
+            else:
+                maxsim = 1.0 #in - binary decision
 
             if self.setsim=="geo_max":
                 total = total * maxsim
