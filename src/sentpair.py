@@ -151,7 +151,7 @@ class SentencePair:
                 Aoverlap+=1
         for lemma in lemmasB:
             Blength+=1
-            if lemma in self.lemmasA:
+            if lemma in lemmasA:
                 Boverlap+=1
         self.lcsim = (Aoverlap+Boverlap)*1.0/(Alength+Blength)
 
