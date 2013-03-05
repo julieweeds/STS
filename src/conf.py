@@ -1,3 +1,7 @@
+import re
+
+thresholdPATT = re.compile('threshold=(.*)')
+
 def configure(arguments):
 
 #set defaults
@@ -17,6 +21,8 @@ def configure(arguments):
     metric="cosine"
 #set similarity method
     setsim="avg_max"
+#set similarity threshold
+    threshold =1
 
 #override with command line arguments
     for argument in arguments:
@@ -42,6 +48,10 @@ def configure(arguments):
             setsim="geo_max"
         elif argument == "avg_max":
             setsim="avg_max"
+        else:
+            matchobj = thresholdPATT.match(argument)
+            if matchobj:
+                threshold = float(matchobj.group(1))
 
-    return(testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim)
+    return(testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim,threshold)
 
