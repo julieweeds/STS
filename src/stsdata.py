@@ -498,12 +498,14 @@ class STSData:
             lemmalistB=pair.returncontentlemmas('B') #get all lemmas in sentence B
 
             #compute set sim A->B
-            sim1= self.set_sim1(lemmalistA,lemmalistB)
+            #(total1,count1)= self.set_sim1(lemmalistA,lemmalistB)
+            sim1=self.set_sim1(lemmalistA,lemmalistB)
             #compute set sim B->A
-            sim2= self.set_sim1(lemmalistB,lemmalistA)
+            #(total2,count2)= self.set_sim1(lemmalistB,lemmalistA)
+            sim2=self.set_sim1(lemmalistB,lemmalistA)
             #compute arithmetic mean
+            #sim =(total1+total2)/(count1+count2)
             sim =(sim1+sim2)/2
-
             pair.sentsim[label]=sim
         return sim
 
@@ -515,9 +517,10 @@ class STSData:
             total=0
         count=0
         for lemmaA in lemmalistA:
+            maxsim=STSData.minsim #smoothing - if no lemmas in B have entry or any similarity to this lemma
             if lemmaA in self.vectordict:
                 if len(self.vectordict[lemmaA].vector)>0: #only consider non-zero vectors
-                    maxsim=STSData.minsim #smoothing - if no lemmas in B have entry or any similarity to this lemma
+
                     for lemmaB in lemmalistB: #find maximally similar lemma in B
                         if lemmaB in self.vectordict:
                             if len(self.vectordict[lemmaB].vector)>0:
@@ -528,24 +531,21 @@ class STSData:
                         maxsim=1 #in
                     else:
                         maxsim = STSData.minsim #out
-                    if self.setsim=="geo_max":
-                        total = total * maxsim
-                    else :
-                        total = total + maxsim
-                    count +=1
+
                 else:
                     if lemmaA in lemmalistB: #check if word unknown to thesaurus is actually in the other sentence
                         maxsim=1
-                        count += 1
-                        if self.setsim=="geo_max":
-                            total=total*maxsim
-                        else:
-                            total = total + maxsim
-        if count==0:
-            sim = 0
-        else:
+                    else:
+                        maxsim=STSData.minsim #unnecessary assignment as this is default
             if self.setsim=="geo_max":
-                sim = pow(total,(1.0/count))
-            else:
-                sim = total/count
+                total = total * maxsim
+            else :
+                total = total + maxsim
+            count +=1
+
+
+        if self.setsim=="geo_max":
+            sim = pow(total,(1.0/count))
+        else:
+            sim = total/count
         return sim
