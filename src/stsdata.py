@@ -336,7 +336,7 @@ class STSData:
         for pos in poscounts.keys():
 
             print "Uncovered by POS:-"
-            print pos+" : " + poscounts[pos]
+            print pos+" : " + str(poscounts[pos])
             total+=poscounts[pos]
         print "Total "+total
 
