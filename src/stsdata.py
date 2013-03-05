@@ -523,24 +523,25 @@ class STSData:
         for lemmaA in lemmalistA:
             maxsim=STSData.minsim #smoothing - if no lemmas in B have entry or any similarity to this lemma
             if lemmaA in self.vectordict:
-#                if len(self.vectordict[lemmaA].vector)>0: #only consider non-zero vectors
-#
-#                    for lemmaB in lemmalistB: #find maximally similar lemma in B
-#                        if lemmaB in self.vectordict:
-#                            if len(self.vectordict[lemmaB].vector)>0:
-#                                thissim=self.vectordict[lemmaA].findsim(self.vectordict[lemmaB],self.metric)
-#                                if(thissim>maxsim):
-#                                    maxsim=thissim
-#                    if maxsim < STSData.simthreshold: #similarity threshold
-#                        maxsim = STSData.minsim #out
-#
-#                else:
-                if lemmaA in lemmalistB: #check if word unknown to thesaurus is actually in the other sentence
+                if lemmaA in lemmalistB: #check if word is actually in the other sentence
                     maxsim=1
                 else:
-                    maxsim=STSData.minsim #unnecessary assignment as this is default
+                    if len(self.vectordict[lemmaA].vector)>0: #only consider non-zero vectors
+
+                        for lemmaB in lemmalistB: #find maximally similar lemma in B
+                            if lemmaB in self.vectordict:
+                                if len(self.vectordict[lemmaB].vector)>0:
+                                    thissim=self.vectordict[lemmaA].findsim(self.vectordict[lemmaB],self.metric)
+                                    if(thissim>maxsim):
+                                        maxsim=thissim
+
+
+                
             else:
                 print "Vector dictionary error for ", lemmaA
+            if maxsim < STSData.simthreshold: #similarity threshold
+                maxsim = STSData.minsim #out
+
             if self.setsim=="geo_max":
                 total = total * maxsim
             else :
