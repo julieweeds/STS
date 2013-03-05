@@ -338,8 +338,8 @@ class STSData:
             print "Uncovered by POS:-"
             print pos+" : " + str(poscounts[pos])
             total+=poscounts[pos]
-        print "Total "+total
-
+        print "Total "+str(total
+)
 
     def readvectors(self,vectorfilename):
         print"Reading vector file"

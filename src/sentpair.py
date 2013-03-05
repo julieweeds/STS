@@ -35,6 +35,8 @@ class SentencePair:
         else:
             self.tokensB.append(word)
     def addlemma(self,lemma,sentid):
+        #need to ensure that lemma is all lowercase for standardisation and matching to thesaurus
+        #lemma = lemma.lower()
         if sentid=='A':
             self.lemmasA.append(lemma)
         else:
