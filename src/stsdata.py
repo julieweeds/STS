@@ -23,6 +23,8 @@ class STSData:
     wordposPATT = re.compile('(.*)/(.)') #only first char of POS
     methods = ["additive","multiplicative"]
     setmethods = ["avg_max","geo_max"]
+    simthreshold = 1.0
+    minsim = 0.001
 
     def __init__(self,graphson,testing,windows):
         self.pairset={} #label is setid_fileid
@@ -515,13 +517,17 @@ class STSData:
         for lemmaA in lemmalistA:
             if lemmaA in self.vectordict:
                 if len(self.vectordict[lemmaA].vector)>0: #only consider non-zero vectors
-                    maxsim=0.001 #smoothing - if no lemmas in B have entry or any similarity to this lemma
+                    maxsim=STSData.minsim #smoothing - if no lemmas in B have entry or any similarity to this lemma
                     for lemmaB in lemmalistB: #find maximally similar lemma in B
                         if lemmaB in self.vectordict:
                             if len(self.vectordict[lemmaB].vector)>0:
                                 thissim=self.vectordict[lemmaA].findsim(self.vectordict[lemmaB],self.metric)
                                 if(thissim>maxsim):
                                     maxsim=thissim
+                    if maxsim >= STSData.simthreshold: #binary similarity judgement
+                        maxsim=1 #in
+                    else:
+                        maxsim = STSData.minsim #out
                     if self.setsim=="geo_max":
                         total = total * maxsim
                     else :
