@@ -24,7 +24,7 @@ class STSData:
     methods = ["additive","multiplicative"]
     setmethods = ["avg_max","geo_max"]
     simthreshold = 1.0
-    minsim = 0.000
+    minsim = 0.001
 
     def __init__(self,graphson,testing,windows,threshold):
         self.pairset={} #label is setid_fileid
@@ -279,25 +279,25 @@ class STSData:
         #print "Average lemma overlap of content words is "+str(self.averagesim("lemma_content","all"))
         print "Average lemma overlap of content words for MSRpar data is "+str(self.averagesim("lemma_content","MSRpar"))
         if self.testing == False:
-            print "Average lemma overlap of content words for europarl data is "+str(self.averagesim("lemma_content","SMTeuroparl"))
             print "Average lemma overlap of content words for MSRvid data is "+str(self.averagesim("lemma_content","MSRvid"))
+            print "Average lemma overlap of content words for europarl data is "+str(self.averagesim("lemma_content","SMTeuroparl"))
 
         #print "Average gs overlap is "+str(self.averagesim("gs","all"))
-        #print "Average gs overlap for europarl data is "+str(self.averagesim("gs","SMTeuroparl"))
         print "Average gs overlap for MSRpar data is "+str(self.averagesim("gs","MSRpar"))
         #print "Average gs overlap for MSRvid data is "+str(self.averagesim("gs","MSRvid"))
+        #print "Average gs overlap for europarl data is "+str(self.averagesim("gs","SMTeuroparl"))
 
         if self.testing:
             print "Average set sentence similarity for MSRpar data is "+str(self.averagesim("sent_set","MSRpar"))
         else:
-            print "Average composed sentence similarity for europarl data is "+str(self.averagesim("sent_comp","SMTeuroparl"))
-            print "Average composed sentence similarity for MSRpar data is "+str(self.averagesim("sent_comp","MSRpar"))
-            print "Average composed sentence similarity for MSRvid data is "+str(self.averagesim("sent_comp","MSRvid"))
-            print "Average set sentence similarity for europarl data is "+str(self.averagesim("sent_set","SMTeuroparl"))
             print "Average set sentence similarity for MSRpar data is "+str(self.averagesim("sent_set","MSRpar"))
             print "Average set sentence similarity for MSRvid data is "+str(self.averagesim("sent_set","MSRvid"))
+            print "Average set sentence similarity for europarl data is "+str(self.averagesim("sent_set","SMTeuroparl"))
+            print "Average composed sentence similarity for MSRpar data is "+str(self.averagesim("sent_comp","MSRpar"))
+            print "Average composed sentence similarity for MSRvid data is "+str(self.averagesim("sent_comp","MSRvid"))
+            print "Average composed sentence similarity for europarl data is "+str(self.averagesim("sent_comp","SMTeuroparl"))
 
-    def vectordict_init(self):
+def vectordict_init(self):
         for pair in self.pairset.values():
             for sent in ['A','B']:
                for item in pair.returncontentlemmas(sent):
