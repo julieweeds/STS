@@ -536,7 +536,7 @@ class STSData:
                                         maxsim=thissim
 
 
-                
+
             else:
                 print "Vector dictionary error for ", lemmaA
             if maxsim < STSData.simthreshold: #similarity threshold

@@ -139,29 +139,20 @@ class SentencePair:
 
     def lemcontoverlap(self):
 
-        if len(self.posA) != len(self.lemmasA):
-            print "Error with number of POS tags"
-            self.display()
-            return
-        if len(self.posB) != len(self.lemmasB):
-            print "Error with number of POS tags"
-            self.display()
-            return
         Aoverlap=0
         Boverlap=0
         Alength=0
         Blength=0
-        for i in range(0,len(self.posA)):
-            if self.posA[i] in SentencePair.contentPOS:
-                Alength+=1
-
-                if self.lemmasA[i] in self.lemmasB:
-                    Aoverlap+=1
-        for i in range(0,len(self.posB)):
-            if self.posB[i] in SentencePair.contentPOS:
-                Blength+=1
-                if self.lemmasB[i] in self.lemmasA:
-                    Boverlap+=1
+        lemmasA=self.returncontentlemmas('A')
+        lemmasB=self.returncontentlemmas('B')
+        for lemma in lemmasA:
+            Alength+=1
+            if lemma in lemmasB:
+                Aoverlap+=1
+        for lemma in lemmasB:
+            Blength+=1
+            if lemma in self.lemmasA:
+                Boverlap+=1
         self.lcsim = (Aoverlap+Boverlap)*1.0/(Alength+Blength)
 
     def tokcontsim(self):
