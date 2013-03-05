@@ -297,7 +297,7 @@ class STSData:
             print "Average composed sentence similarity for MSRvid data is "+str(self.averagesim("sent_comp","MSRvid"))
             print "Average composed sentence similarity for europarl data is "+str(self.averagesim("sent_comp","SMTeuroparl"))
 
-def vectordict_init(self):
+    def vectordict_init(self):
         for pair in self.pairset.values():
             for sent in ['A','B']:
                for item in pair.returncontentlemmas(sent):
