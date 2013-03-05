@@ -17,10 +17,10 @@ class STSData:
     sidendPATT = re.compile('.*</document>')
     wordPATT = re.compile('.*<word>(.*)</word>')
     lemmaPATT = re.compile('.*<lemma>(.*)</lemma>')
-    posPATT = re.compile('.*<POS>(.).*</POS>')
+    posPATT = re.compile('.*<POS>(.).*</POS>') #only first char of POS
     fileidPATT= re.compile('.*STSinput(.*).pair(.*)(.).tagged')
     gssetPATT = re.compile('.*STS.gs.(.*).txt')
-    wordposPATT = re.compile('(.*)/(.*)')
+    wordposPATT = re.compile('(.*)/(.)') #only first char of POS
     methods = ["additive","multiplicative"]
     setmethods = ["avg_max","geo_max"]
 
