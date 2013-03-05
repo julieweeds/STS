@@ -24,7 +24,7 @@ class STSData:
     methods = ["additive","multiplicative"]
     setmethods = ["avg_max","geo_max"]
     simthreshold = 1.0
-    minsim = 0.001
+    minsim = 0.000
 
     def __init__(self,graphson,testing,windows,threshold):
         self.pairset={} #label is setid_fileid
@@ -495,8 +495,8 @@ class STSData:
         if label in pair.sentsim.keys():
             sim = pair.sentsim[label]
         else:
-            lemmalistA=pair.returncontentlemmas('A') #get all lemmas in sentence A
-            lemmalistB=pair.returncontentlemmas('B') #get all lemmas in sentence B
+            lemmalistA=pair.returncontentlemmas('A') #get all content lemmas in sentence A
+            lemmalistB=pair.returncontentlemmas('B') #get all content lemmas in sentence B
 
             #compute set sim A->B
             (total1,count1)= self.set_sim1(lemmalistA,lemmalistB)
