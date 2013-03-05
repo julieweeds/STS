@@ -316,7 +316,7 @@ class STSData:
                 covered+=freq
             else:
                 self.uncovered[word]=freq
-        coverage=covered*1.0/total
+        coverage=covered*100.0/total
         self.analyse_uncovered()
         return coverage
 
