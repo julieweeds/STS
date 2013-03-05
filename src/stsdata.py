@@ -498,14 +498,17 @@ class STSData:
             lemmalistB=pair.returncontentlemmas('B') #get all lemmas in sentence B
 
             #compute set sim A->B
-            #(total1,count1)= self.set_sim1(lemmalistA,lemmalistB)
-            sim1=self.set_sim1(lemmalistA,lemmalistB)
+            (total1,count1)= self.set_sim1(lemmalistA,lemmalistB)
+            #sim1=self.set_sim1(lemmalistA,lemmalistB)
             #compute set sim B->A
-            #(total2,count2)= self.set_sim1(lemmalistB,lemmalistA)
-            sim2=self.set_sim1(lemmalistB,lemmalistA)
+            (total2,count2)= self.set_sim1(lemmalistB,lemmalistA)
+            #sim2=self.set_sim1(lemmalistB,lemmalistA)
             #compute arithmetic mean
-            #sim =(total1+total2)/(count1+count2)
-            sim =(sim1+sim2)/2
+            if self.setsim=="geo_max":
+                sim=pow(total1*total2,1.0/(count1+count2))
+            else:
+                sim =(total1+total2)/(count1+count2)
+            #sim =(sim1+sim2)/2
             pair.sentsim[label]=sim
         return sim
 
@@ -544,8 +547,8 @@ class STSData:
             count +=1
 
 
-        if self.setsim=="geo_max":
-            sim = pow(total,(1.0/count))
-        else:
-            sim = total/count
-        return sim
+#        if self.setsim=="geo_max":
+#            sim = pow(total,(1.0/count))
+#        else:
+#            sim = total/count
+        return (total,count)
