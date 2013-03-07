@@ -540,9 +540,9 @@ class STSData:
             else:
                 print "Vector dictionary error for ", lemmaA
             if maxsim < STSData.simthreshold: #similarity threshold
-                maxsim = STSData.minsim #out
-            #else:
-            #    maxsim = 1.0 #in - binary decision
+                maxsim = maxsim*3 #weighted thresholding
+            else:
+                maxsim = 1.0 #in - weighted thresholding
 
             if self.setsim=="geo_max":
                 total = total * maxsim
