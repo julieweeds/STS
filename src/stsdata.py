@@ -26,6 +26,7 @@ class STSData:
     simthreshold = 1.0
     minsim = 0.001
     threshtype="nonbin"
+    seed = 666
 
     def __init__(self,graphson,testing,windows,threshold,threshtype):
         self.pairset={} #label is setid_fileid
@@ -53,6 +54,7 @@ class STSData:
         WordVector.windows=windows
         STSData.simthreshold=threshold
         STSData.threshtype=threshtype
+        random.seed(STSData.seed) #for reproducible results
 
     def readdata(self,parentname):
         dirlist = glob.glob(parentname+'/*')
@@ -178,8 +180,7 @@ class STSData:
         #print "Splitting data into subsets for cross-validation ..."
         self.nosplits=num
         for pair in self.pairset.values():
-            rsplit = random.randint(1,num)
-            pair.cvsplit = rsplit
+            pair.cvsplit = random.randint(1,num)
 
     def fitpoly(self,subset,excl,type):
         #subset is a setid and excl is cv_split to exclude and type is similarity to correlate
