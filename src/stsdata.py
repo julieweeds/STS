@@ -24,7 +24,7 @@ class STSData:
     methods = ["additive","multiplicative"]
     setmethods = ["avg_max","geo_max"]
     simthreshold = 1.0
-    minsim = 0.000
+    minsim = 0.001
     threshtype="nonbin"
     seed = 666
 
