@@ -53,6 +53,7 @@ def do_correlation(mydata):
             total=0
             totalsquare=0
             n=0
+            mydata.setseed()
             while(repeat_param<=cv_repeat):
                 mydata.split(cv_param)
                 while(param<=cv_param):

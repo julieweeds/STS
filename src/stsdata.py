@@ -54,7 +54,9 @@ class STSData:
         WordVector.windows=windows
         STSData.simthreshold=threshold
         STSData.threshtype=threshtype
-        random.seed(STSData.seed) #for reproducible results
+
+    def setseed(self):
+        random.seed(STSData.seed)#for reproducible results
 
     def readdata(self,parentname):
         dirlist = glob.glob(parentname+'/*')
