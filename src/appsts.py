@@ -28,8 +28,8 @@ cv_param=10
 cv_repeat=100
 k=1.96 #for 95% confidence intervals
 files=["MSRpar","MSRvid","SMTeuroparl"]
-sims=["lemma_content","sent_set","sent_comp"]
-#sims=["lemma_content","sent_set"]
+#sims=["lemma_content","sent_set","sent_comp"]
+sims=["lemma_content","sent_set"]
 graphson=False
 
 if testing:
