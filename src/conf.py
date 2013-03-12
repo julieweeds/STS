@@ -23,6 +23,8 @@ def configure(arguments):
     setsim="avg_max"
 #set similarity threshold
     threshold =1
+#set threshold type
+    threshtype="nonbin"
 
 #override with command line arguments
     for argument in arguments:
@@ -48,10 +50,14 @@ def configure(arguments):
             setsim="geo_max"
         elif argument == "avg_max":
             setsim="avg_max"
+        elif argument == "binary":
+            threshtype="binary"
+        elif argument == "weighted":
+            threshtype="weighted"
         else:
             matchobj = thresholdPATT.match(argument)
             if matchobj:
                 threshold = float(matchobj.group(1))
 
-    return(testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim,threshold)
+    return(testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim,threshold,threshtype)
 

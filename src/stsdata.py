@@ -25,8 +25,9 @@ class STSData:
     setmethods = ["avg_max","geo_max"]
     simthreshold = 1.0
     minsim = 0.001
+    threshtype="nonbin"
 
-    def __init__(self,graphson,testing,windows,threshold):
+    def __init__(self,graphson,testing,windows,threshold,threshtype):
         self.pairset={} #label is setid_fileid
         self.vectordict={} #mapping from (word,POS) tuples to wordvectors
         self.wordcounts={} #count the number of times each (word,POS) tuple occurs in data for analysis
@@ -51,6 +52,7 @@ class STSData:
         self.dim=0
         WordVector.windows=windows
         STSData.simthreshold=threshold
+        STSData.threshtype=threshtype
 
     def readdata(self,parentname):
         dirlist = glob.glob(parentname+'/*')
@@ -540,9 +542,16 @@ class STSData:
             else:
                 print "Vector dictionary error for ", lemmaA
             if maxsim < STSData.simthreshold: #similarity threshold
-                maxsim = maxsim*3 #weighted thresholding
+                if STSData.threshtype=="weighted":
+                     maxsim = maxsim/STSData.simthreshold #weighted thresholding
+                else:
+                    maxsim = STSData.minsim # minimum similarity i.e., ignore in binary or non-binary case
+
             else:
-                maxsim = 1.0 #in - weighted thresholding
+                if STSData.threshtype=="nonbin":
+                    maxsim = maxsim * 1.0 # leave similarity as it is for non-binary threshold
+                else:
+                    maxsim = 1.0 #in - weighted thresholding or binary threshold
 
             if self.setsim=="geo_max":
                 total = total * maxsim

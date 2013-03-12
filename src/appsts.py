@@ -6,7 +6,7 @@ from stsdata import STSData
 #set up configuration. Import configuration function
 import conf
 #pass commandline arguments
-(testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim,threshold)=conf.configure(sys.argv)
+(testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim,threshold,threshtype)=conf.configure(sys.argv)
 
 #uni filenames
 parent="/Users/juliewe/Documents/workspace/STS/data/"
@@ -25,7 +25,7 @@ else:
     vectorfilename=parent+"allvectors/vectors_mi"
 
 cv_param=10
-cv_repeat=10
+cv_repeat=100
 k=1.96 #for 95% confidence intervals
 files=["MSRpar","MSRvid","SMTeuroparl"]
 #sims=["lemma_content","sent_set","sent_comp"]
@@ -72,12 +72,13 @@ def do_correlation(mydata):
             print "Average cross-validation correlation for "+f+" with "+type+" similarity is "+str(av)+", sd="+str(sd)+", n="+str(n)
             print "95% confidence interval is "+str(av)+" +- "+str(int)
 
-mydata = STSData(graphson,testing,windows,threshold)
+mydata = STSData(graphson,testing,windows,threshold,threshtype)
 print "Configuration set to windows = ", windows
 print "Composition type = ", comptype
 print "Similarity metric = ", metric
 print "Set similarity method = ", setsim
 print "Similarity threshold = ", str(threshold)
+print "Threshold type = ", threshtype
 mydata.readdata(datadirname)
 mydata.readgs(gsdirname)
 sys.stdout.flush()
