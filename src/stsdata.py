@@ -78,7 +78,7 @@ class STSData:
 
                 self.readdatafile(f)
             if self.testing == True: break
-        self.removeduplicates()
+#        self.removeduplicates()
         self.vectordict_init()
 
 
@@ -127,6 +127,7 @@ class STSData:
 
     def removeduplicates(self):
         #remove pairs from pairset where the two sentences are identical
+        #however, this needs work as the system assumes consecutive numbering of pairs
         total={}
         dups={}
         for key in self.pairset.keys():
