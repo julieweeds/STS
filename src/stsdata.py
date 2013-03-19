@@ -205,7 +205,7 @@ class STSData:
             self.pairset[label].gs=float(line)
         else:
             print "WARNING "+label+" not found in pairset"
-            
+
 
     def split(self,num):
         #print "Splitting data into subsets for cross-validation ..."

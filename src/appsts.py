@@ -76,7 +76,7 @@ def do_correlation(mydata):
             int = k*sd/pow(n,0.5)
             print "Average cross-validation correlation for "+f+" with "+type+" similarity is "+str(av)+", sd="+str(sd)+", n="+str(n)
             print "95% confidence interval is "+str(av)+" +- "+str(int)
-            outfile=parent+"logs/ranking_"+f+"_"+type++"_"+setsim+"_"+threshtype+"_"+str(threshold)
+            outfile=parent+"logs/ranking_"+f+"_"+type+"_"+setsim+"_"+threshtype+"_"+str(threshold)
             outstream=open(outfile,'w')
             mydata.ranksent(f,type,cv_repeat,outstream)
             outstream.close()
