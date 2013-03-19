@@ -77,6 +77,7 @@ class STSData:
 
                 self.readdatafile(f)
             if self.testing == True: break
+        self.removeduplicates()
         self.vectordict_init()
 
 
@@ -122,6 +123,33 @@ class STSData:
                                 pos = matchobj.group(1)
                                 self.currentpair.addpos(pos,self.sentid)
 
+
+    def removeduplicates(self):
+        #remove pairs from pairset where the two sentences are identical
+        total={}
+        dups={}
+        for key in self.pairset.keys():
+            pair=self.pairset[key]
+            fileid=pair.fid
+            if fileid in total.keys():
+                total[fileid]=total[fileid]+1
+            else:
+                total[fileid]=1
+            if pair.isidentical():
+                if fileid in dups.keys():
+                    dups[fileid]=dups[fileid]+1
+                else:
+                    dups[fileid]=1
+                print "Removing duplicate:"
+                pair.display()
+                del self.pairset[key]
+        for fileid in total.keys():
+            if fileid in dups.keys():
+                top=dups[fileid]
+            else:
+                top=0.0
+            percent = top*100.0/total[fileid]
+            print "For "+fileid+" removed "+str(top)+" duplicates out of "+str(total[fileid])+" pairs: "+str(percent)+"%"
 
 
     def averagesim(self,type,subset):

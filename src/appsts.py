@@ -9,7 +9,7 @@ import conf
 (testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim,threshold,threshtype)=conf.configure(sys.argv)
 
 #uni filenames
-parent="/Users/juliewe/Documents/workspace/STS/data/"
+parent="/Volumes/LocalScratchHD/juliewe/Documents/workspace/STS/data/"
 
 if at_home:
     parent="C:/Users/Julie/Documents/sussex/STS/data/"

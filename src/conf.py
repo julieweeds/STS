@@ -12,7 +12,7 @@ def configure(arguments):
     on_apollo=True
 #feature_type
 
-    windows=True
+    windows=False
 #filtered vectors
     filtered=True
 #composition type
@@ -20,7 +20,7 @@ def configure(arguments):
 #similarity metric
     metric="cosine"
 #set similarity method
-    setsim="avg_max"
+    setsim="geo_max"
 #set similarity threshold
     threshold =1
 #set threshold type

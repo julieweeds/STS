@@ -252,3 +252,18 @@ class SentencePair:
             print "Fatal Error - have not computed set similarities"
             exit()
         return sim
+
+    def isidentical(self):
+        lengthA = len(self.tokensA)
+        lengthB = len(self.tokensB)
+        count=0
+        if lengthA==lengthB:
+            for i in range(0,lengthA):
+                if self.tokensA[i]==self.tokensB[i]:
+                    count+=1
+        #self.display()
+        #print count, lengthA, lengthB
+        if count == lengthA:
+            return True
+        else:
+            return False
