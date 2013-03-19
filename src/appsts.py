@@ -29,7 +29,8 @@ cv_repeat=100
 k=1.96 #for 95% confidence intervals
 files=["MSRpar","MSRvid","SMTeuroparl"]
 #sims=["lemma_content","sent_set","sent_comp"]
-sims=["lemma_content","sent_set"]
+sims=["sent_set"]
+baseline="lemma_content"
 graphson=False
 
 if testing:
@@ -57,7 +58,10 @@ def do_correlation(mydata):
             while(repeat_param<=cv_repeat):
                 mydata.split(cv_param)
                 while(param<=cv_param):
-                    r= mydata.testpoly(f,param,type)
+                    if baseline=="none":
+                        r=mydata.testpoly(f,param,type)
+                    else:
+                        r= mydata.testpoly2(f,param,baseline,type)
                     total +=r[0]
                     totalsquare +=r[0]*r[0]
                     #print f, param, r
@@ -72,6 +76,11 @@ def do_correlation(mydata):
             int = k*sd/pow(n,0.5)
             print "Average cross-validation correlation for "+f+" with "+type+" similarity is "+str(av)+", sd="+str(sd)+", n="+str(n)
             print "95% confidence interval is "+str(av)+" +- "+str(int)
+            outfile="../ranking_"+f+"_"+type++"_"+setsim+"_"+threshtype+"_"+str(threshold)
+            outstream=open(outfile,'w')
+            mydata.ranksent(f,type,cv_repeat,outstream)
+            outstream.close()
+
 
 mydata = STSData(graphson,testing,windows,threshold,threshtype)
 print "Configuration set to windows = ", windows

@@ -28,6 +28,7 @@ class SentencePair:
         self.comp="none"
         self.setsim="none"
         self.testing=testing
+        self.totaldiff=0 #to establish helpfulness of technique over baseline
 
     def addword(self,word,sentid):
         if sentid=='A':
@@ -63,6 +64,12 @@ class SentencePair:
         print self.posB
         #self.sentvector['A'].display()
         #self.sentvector['B'].display()
+
+    def toString(self,type):
+        strep=self.fid+"\t"+str(self.id)+"\t"+str(self.gs)+"\t"+str(self.sim('lemma_content'))+"\t"+str(self.sim(type))+"\n"
+        strep=strep+str(self.lemmasA)+"\n"
+        strep=strep+str(self.lemmasB)+"\n"
+        return strep
 
     def sim(self,type):
         ressim =-1

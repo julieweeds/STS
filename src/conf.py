@@ -20,11 +20,11 @@ def configure(arguments):
 #similarity metric
     metric="cosine"
 #set similarity method
-    setsim="geo_max"
+    setsim="avg_max"
 #set similarity threshold
     threshold =1
 #set threshold type
-    threshtype="nonbin"
+    threshtype="binary"
 
 #override with command line arguments
     for argument in arguments:

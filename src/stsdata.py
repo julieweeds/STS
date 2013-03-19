@@ -9,6 +9,7 @@ import numpy
 import scipy.stats as stats
 import sys
 import scipy.sparse as sparse
+import operator
 
 #import matplotlib.pyplot as plt
 
@@ -255,13 +256,19 @@ class STSData:
         plt.text(0.05,yl*0.8,mytext2)
         plt.show()
 
-    def testpoly(self,subset,excl,type):
 
-        thispoly = self.fitpoly(subset,excl,type)
+    def testpoly2(self,subset,excl,type1, type2):
+
+        #to generate and compare 2 regression lines
+
+        thispoly1 = self.fitpoly(subset,excl,type1)
+        thispoly2 = self.fitpoly(subset,excl,type2)
         #print thispoly
 
         fileid =1
+#        predictions1=[]
         predictions=[]
+
         gs=[]
         carryon=True
         #noones=0
@@ -271,19 +278,24 @@ class STSData:
             label = subset+"_"+str(fileid)
             if label in self.pairset.keys():
                 if self.pairset[label].cvsplit== excl:
-                    #if self.pairset[label].sim(type)==1:
-                      #  noones+=1
-                    #if self.pairset[label].sim(type)==0:
-                      #  nozeroes+=1
-                    predictions.append(thispoly(self.pairset[label].sim(type)))
+                #if self.pairset[label].sim(type)==1:
+                #  noones+=1
+                #if self.pairset[label].sim(type)==0:
+                #  nozeroes+=1
+ #                   predictions1.append(thispoly1(self.pairset[label].sim(type1)))
+                    predictions.append(thispoly2(self.pairset[label].sim(type2)))
                     gs.append(self.pairset[label].gs)
+                    error1 = thispoly1(self.pairset[label].sim(type1))-self.pairset[label].gs
+                    error2 = thispoly2(self.pairset[label].sim(type2))-self.pairset[label].gs
+                    diff=pow(error2,2)-pow(error1,2)
+                    self.pairset[label].totaldiff+=diff
                     fileid+=1
                 else:
                     #ignore
                     fileid+=1
             else:
                 carryon = False
-        #now to compute spearman correlation coefficient between gs and predictions
+            #now to compute spearman correlation coefficient between gs and predictions
 
         x=numpy.array(predictions)
         y=numpy.array(gs)
@@ -295,8 +307,9 @@ class STSData:
         if excl==1 and self.show==True:
             mytitle="Correlation for: "+subset+": "+str(excl)+": "+type
             self.showpoly(x,y,numpy.poly1d(numpy.polyfit(x,y,1)),mytitle,pr,5,5)
-        #print pr
+            #print pr
         return pr
+
 
 
     def testread(self):
@@ -596,3 +609,17 @@ class STSData:
 #        else:
 #            sim = total/count
         return (total,count)
+
+    def ranksent(self,f,type,repeats,outstream):
+        ranking=[]
+        for key in self.pairset.keys():#create unordered list of (key,score) pairs
+            if self.pairset[key].fid == f:
+                score = self.pairset[key].totaldiff/repeats
+                ranking.append((key,score))
+        #sort list based on score
+        ranking.sort(key=operator.itemgetter(1))
+        rank=1
+        for (key,score) in ranking:
+            outstream.write(str(rank)+" : "+str(score)+"\n")
+            outstream.write(self.pairset[key].toString(type))
+            rank+=1
