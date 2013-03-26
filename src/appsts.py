@@ -58,7 +58,10 @@ if testing:
 if toyrun:
     datadirname=parent+"toy/toyinput-tagged"
     gsdirname=parent+"toy/gs"
-    files=["toy1"]
+    files=["all"]
+    sims=["sent_set"]
+    cv_param=1
+    cv_repeat=1
 
 
 
