@@ -663,5 +663,6 @@ class STSData:
     def makecache(self,filename):
         outstream = open(filename,'w')
         for vector in self.vectordict.values():
-            vector.makecache(outstream)
+            if len(vector.vector)>0:
+                vector.makecache(outstream)
         outstream.close()
