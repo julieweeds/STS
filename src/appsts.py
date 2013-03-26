@@ -6,7 +6,7 @@ from stsdata import STSData
 #set up configuration. Import configuration function
 import conf
 #pass commandline arguments
-(testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim,threshold,threshtype,toyrun)=conf.configure(sys.argv)
+(testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim,threshold,threshtype,toyrun,use_cache)=conf.configure(sys.argv)
 
 #uni filenames
 parent="/Volumes/LocalScratchHD/juliewe/Documents/workspace/STS/data/"
@@ -20,15 +20,23 @@ if on_apollo:
 datadirname=parent+"trial/STS2012-train/STSinput-tagged"
 gsdirname=parent+"trial/STS2012-train/gs"
 
-if toyrun==True:
+if toyrun:
     datadirname=parent+"toy/toy-tagged"
     gsdirname=parent+"toy/gs"
 
 
-if filtered==True:
+if filtered:
     vectorfilename=parent+"vectors_gw_filt/vectors_mi"
 else:
     vectorfilename=parent+"allvectors/vectors_mi"
+
+if windows:
+    cachename=datadirname+"/../win_vectors.cached"
+else:
+    cachename=datadirname+"/../dep_vectors.cached"
+
+if use_cache:
+    vectorfilename=cachename
 
 cv_param=10
 cv_repeat=1
@@ -104,9 +112,10 @@ mydata.readdata(datadirname)
 mydata.readgs(gsdirname)
 sys.stdout.flush()
 if "sent_set" in sims:
-    mydata.readvectors(vectorfilename)
+    mydata.readvectors(vectorfilename,cachename)
 elif "sent_comp" in sims:
-    mydata.readvectors(vectorfilename)
+    mydata.readvectors(vectorfilename,cachename)
+
 sys.stdout.flush()
 if "sent_set" in sims:
     mydata.set_simall(setsim,metric)

@@ -151,3 +151,9 @@ class WordVector:
             sim = dotprod/(self.length*avector.length)
         #print sim
         return sim
+
+    def makecache(self,outstream):
+        outstream.write(self.word+"/"+self.pos)
+        for feature in self.vector.keys():
+            outstream.write("\t"+feature+"\t"+self.vector[feature])
+        outstream.write("\n")

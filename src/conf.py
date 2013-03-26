@@ -26,7 +26,9 @@ def configure(arguments):
 #set threshold type
     threshtype="binary"
 #data
-    toyrun=false
+    toyrun=False
+#use vector cache?
+    use_cache=False
 
 
 #override with command line arguments
@@ -59,10 +61,12 @@ def configure(arguments):
             threshtype="weighted"
         elif argument == "toyrun":
             toyrun == True
+        elif argument == "use_cache":
+            use_cache=True
         else:
             matchobj = thresholdPATT.match(argument)
             if matchobj:
                 threshold = float(matchobj.group(1))
 
-    return(testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim,threshold,threshtype,toyrun)
+    return(testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim,threshold,threshtype,toyrun,use_cache)
 

@@ -421,7 +421,7 @@ class STSData:
         print "Total "+str(total
 )
 
-    def readvectors(self,vectorfilename):
+    def readvectors(self,vectorfilename,cachename):
         print"Reading vector file"
         linesread=0
         instream=open(vectorfilename,'r')
@@ -439,6 +439,11 @@ class STSData:
         print "Vector dictionary type coverage is "+str(coverage)+"%"
         print "Token coverage is "+str(self.compute_token_coverage())+"%"
         instream.close()
+        if cachename==vectorfilename:
+            print "Vector cache up to date"
+        else:
+            print "Writing vector cache"
+            self.makecache(cachename)
         print "Compressing vector dictionary representation"
         self.makematrix()
         print "Finished sparse array generation"
@@ -657,6 +662,6 @@ class STSData:
 
     def makecache(self,filename):
         outstream = open(filename,'w')
-        for vector in self.vectordict:
+        for vector in self.vectordict.values():
             vector.cache(outstream)
         outstream.close()
