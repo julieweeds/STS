@@ -19,8 +19,8 @@ class STSData:
     wordPATT = re.compile('.*<word>(.*)</word>')
     lemmaPATT = re.compile('.*<lemma>(.*)</lemma>')
     posPATT = re.compile('.*<POS>(.).*</POS>') #only first char of POS
-    fileidPATT= re.compile('.*STSinput(.*).pair(.*)(.).tagged')
-    gssetPATT = re.compile('.*STS.gs.(.*).txt')
+    fileidPATT= re.compile('.*input(.*).pair(.*)(.).tagged')
+    gssetPATT = re.compile('.*.gs.(.*).txt')
     wordposPATT = re.compile('(.*)/(.)') #only first char of POS
     methods = ["additive","multiplicative"]
     setmethods = ["avg_max","geo_max"]
