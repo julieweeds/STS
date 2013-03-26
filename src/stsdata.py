@@ -75,7 +75,7 @@ class STSData:
                     self.fileid=matchobj.group(2)
                     self.sentid=matchobj.group(3)
                     self.label=self.setid+"_"+self.fileid
-                    #print "Setid: "+self.setid+" fileid: "+self.fileid
+                    print "Setid: "+self.setid+" fileid: "+self.fileid
                 else:
                     print "Error with filename, should contain id number "+f
 

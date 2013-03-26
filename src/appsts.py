@@ -55,6 +55,7 @@ if toyrun:
     sims=["sent_set"]
     cv_param=2
     cv_repeat=1
+    baseline="none"
 
 if windows:
     cachename=datadirname+"/../win_vectors.cached"
