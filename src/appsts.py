@@ -49,7 +49,7 @@ baseline="lemma_content"
 graphson=False
 
 if testing:
-    sims=["dinu_overlap]
+    sims=["dinu_overlap"]
     files=["MSRpar"]
     cv_param=10
     cv_repeat=1
