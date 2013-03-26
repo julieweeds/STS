@@ -422,7 +422,7 @@ class STSData:
 )
 
     def readvectors(self,vectorfilename,cachename):
-        print"Reading vector file"
+        print"Reading vector file "+vectorfilename
         linesread=0
         instream=open(vectorfilename,'r')
         for line in instream:
@@ -663,5 +663,5 @@ class STSData:
     def makecache(self,filename):
         outstream = open(filename,'w')
         for vector in self.vectordict.values():
-            vector.cache(outstream)
+            vector.makecache(outstream)
         outstream.close()
