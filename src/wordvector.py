@@ -155,5 +155,5 @@ class WordVector:
     def makecache(self,outstream):
         outstream.write(self.word+"/"+self.pos)
         for feature in self.vector.keys():
-            outstream.write("\t"+feature+"\t"+self.vector[feature])
+            outstream.write("\t"+feature+"\t"+str(self.vector[feature]))
         outstream.write("\n")
