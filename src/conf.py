@@ -22,9 +22,9 @@ def configure(arguments):
 #set similarity method
     setsim="avg_max"
 #set similarity threshold
-    threshold =1
+    threshold =0
 #set threshold type
-    threshtype="binary"
+    threshtype="nonbin"
 #data
     toyrun=False
 #use vector cache?
@@ -55,6 +55,8 @@ def configure(arguments):
             setsim="geo_max"
         elif argument == "avg_max":
             setsim="avg_max"
+        elif argument == "nonbin":
+            threshtype="nonbin"
         elif argument == "binary":
             threshtype="binary"
         elif argument == "weighted":

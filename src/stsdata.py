@@ -29,7 +29,8 @@ class STSData:
     threshtype="nonbin"
     seed = 666
 
-    def __init__(self,graphson,testing,windows,threshold,threshtype):
+
+    def __init__(self,graphson,testing,windows,threshold,threshtype,verbose):
         self.pairset={} #label is setid_fileid
         self.vectordict={} #mapping from (word,POS) tuples to wordvectors
         self.wordcounts={} #count the number of times each (word,POS) tuple occurs in data for analysis
@@ -55,6 +56,7 @@ class STSData:
         WordVector.windows=windows
         STSData.simthreshold=threshold
         STSData.threshtype=threshtype
+        self.verbose = verbose
 
     def setseed(self):
         random.seed(STSData.seed)#for reproducible results
@@ -75,7 +77,8 @@ class STSData:
                     self.fileid=matchobj.group(2)
                     self.sentid=matchobj.group(3)
                     self.label=self.setid+"_"+self.fileid
-                    print "Setid: "+self.setid+" fileid: "+self.fileid
+                    #print "Self.label = "+self.label
+                    #print "Setid: "+self.setid+" fileid: "+self.fileid
                 else:
                     print "Error with filename, should contain id number "+f
 
@@ -596,6 +599,8 @@ class STSData:
                 sim =(total1+total2)/(count1+count2)
             #sim =(sim1+sim2)/2
             pair.sentsim[label]=sim
+        if self.verbose:
+            print (pair.toString("sent_set"))
         return sim
 
     def set_sim1(self,lemmalistA,lemmalistB): #asymmetric set sim from A to B
@@ -607,9 +612,11 @@ class STSData:
         count=0.0
         for lemmaA in lemmalistA:
             maxsim=STSData.minsim #smoothing - if no lemmas in B have entry or any similarity to this lemma
+            maxlemma=("$!","$!")
             if lemmaA in self.vectordict:
                 if lemmaA in lemmalistB: #check if word is actually in the other sentence
                     maxsim=1.0
+                    maxlemma=lemmaA
                 else:
                     if len(self.vectordict[lemmaA].vector)>0: #only consider non-zero vectors
 
@@ -619,7 +626,7 @@ class STSData:
                                     thissim=self.vectordict[lemmaA].findsim(self.vectordict[lemmaB],self.metric)
                                     if(thissim>maxsim):
                                         maxsim=thissim
-
+                                        maxlemma=lemmaB
 
 
             else:
@@ -629,7 +636,7 @@ class STSData:
                      maxsim = maxsim/STSData.simthreshold #weighted thresholding
                 else:
                     maxsim = STSData.minsim # minimum similarity i.e., ignore in binary or non-binary case
-
+                    maxlemma=("$!",maxlemma)
             else:
                 if STSData.threshtype=="nonbin":
                     maxsim = maxsim * 1.0 # leave similarity as it is for non-binary threshold
@@ -641,7 +648,10 @@ class STSData:
             else :
                 total = total + maxsim
             count +=1
-
+            if self.verbose:
+                (wordA,posA)=lemmaA
+                (wordB,posB)=maxlemma
+                print wordA+"/"+posA+ " : "+wordB+"/"+posB+" : "+str(maxsim)
 
 #        if self.setsim=="geo_max":
 #            sim = pow(total,(1.0/count))
@@ -669,3 +679,8 @@ class STSData:
             if len(vector.vector)>0:
                 vector.makecache(outstream)
         outstream.close()
+
+    def inspect(self):
+        print "Pairs stored = "+str(len(self.pairset))
+        #for p in self.pairset.values():
+         #   print(p.toString("sent_set"))

@@ -36,6 +36,7 @@ files=["MSRpar","MSRvid","SMTeuroparl"]
 sims=["sent_set"]
 baseline="lemma_content"
 graphson=False
+verbose=False
 
 if testing:
     sims=["sent_set"]
@@ -56,6 +57,7 @@ if toyrun:
     cv_param=2
     cv_repeat=1
     baseline="none"
+    verbose=True
 
 if windows:
     cachename=datadirname+"/../win_vectors.cached"
@@ -107,7 +109,7 @@ def do_correlation(mydata):
                 print "Starting next run"
 
 
-mydata = STSData(graphson,testing,windows,threshold,threshtype)
+mydata = STSData(graphson,testing,windows,threshold,threshtype,verbose)
 print "Configuration set to windows = ", windows
 print "Composition type = ", comptype
 print "Similarity metric = ", metric
@@ -132,5 +134,8 @@ if "sent_comp" in sims:
 for sim in sims:
     for dataset in files:
         mydata.testread(sim,dataset)
-do_correlation(mydata)
+if toyrun:
+    mydata.inspect()
+else:
+    do_correlation(mydata)
 
