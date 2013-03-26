@@ -60,7 +60,7 @@ def configure(arguments):
         elif argument == "weighted":
             threshtype="weighted"
         elif argument == "toyrun":
-            toyrun == True
+            toyrun = True
         elif argument == "use_cache":
             use_cache=True
         else:
