@@ -12,7 +12,7 @@ import conf
 parent="/Volumes/LocalScratchHD/juliewe/Documents/workspace/STS/data/"
 
 if at_home:
-    parent="C:/Users/Julie/Documents/sussex/STS/data/"
+    parent="C:/Users/Julie/Documents/GitHub/STS/data/"
 
 if on_apollo:
     parent="/mnt/lustre/scratch/inf/juliewe/STS/data/"

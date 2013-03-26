@@ -25,6 +25,9 @@ def configure(arguments):
     threshold =1
 #set threshold type
     threshtype="binary"
+#data
+    toyrun=false
+
 
 #override with command line arguments
     for argument in arguments:
@@ -54,10 +57,12 @@ def configure(arguments):
             threshtype="binary"
         elif argument == "weighted":
             threshtype="weighted"
+        elif argument == "toyrun":
+            toyrun == True
         else:
             matchobj = thresholdPATT.match(argument)
             if matchobj:
                 threshold = float(matchobj.group(1))
 
-    return(testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim,threshold,threshtype)
+    return(testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim,threshold,threshtype,toyrun)
 
