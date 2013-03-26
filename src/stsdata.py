@@ -61,6 +61,9 @@ class STSData:
 
     def readdata(self,parentname):
         dirlist = glob.glob(parentname+'/*')
+        if len(dirlist)==0:
+            print "Aborting due to empty data directory "+parentname
+            exit(1)
         for d in dirlist:
             print "Reading "+d
             filelist = glob.glob(d+'/*')

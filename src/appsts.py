@@ -21,7 +21,7 @@ datadirname=parent+"trial/STS2012-train/STSinput-tagged"
 gsdirname=parent+"trial/STS2012-train/gs"
 
 if toyrun:
-    datadirname=parent+"toy/toy-tagged"
+    datadirname=parent+"toy/toyinput-tagged"
     gsdirname=parent+"toy/gs"
 
 
