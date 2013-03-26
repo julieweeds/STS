@@ -20,10 +20,6 @@ if on_apollo:
 datadirname=parent+"trial/STS2012-train/STSinput-tagged"
 gsdirname=parent+"trial/STS2012-train/gs"
 
-if toyrun:
-    datadirname=parent+"toy/toyinput-tagged"
-    gsdirname=parent+"toy/gs"
-
 
 if filtered:
     vectorfilename=parent+"vectors_gw_filt/vectors_mi"
@@ -58,6 +54,12 @@ if testing:
 
 #comptype="additive"
 #metric="cosine"
+
+if toyrun:
+    datadirname=parent+"toy/toyinput-tagged"
+    gsdirname=parent+"toy/gs"
+    files=["toy1"]
+
 
 
 def do_correlation(mydata):
