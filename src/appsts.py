@@ -26,13 +26,6 @@ if filtered:
 else:
     vectorfilename=parent+"allvectors/vectors_mi"
 
-if windows:
-    cachename=datadirname+"/../win_vectors.cached"
-else:
-    cachename=datadirname+"/../dep_vectors.cached"
-
-if use_cache:
-    vectorfilename=cachename
 
 cv_param=10
 cv_repeat=1
@@ -63,6 +56,13 @@ if toyrun:
     cv_param=1
     cv_repeat=1
 
+if windows:
+    cachename=datadirname+"/../win_vectors.cached"
+else:
+    cachename=datadirname+"/../dep_vectors.cached"
+
+if use_cache:
+    vectorfilename=cachename
 
 
 def do_correlation(mydata):
