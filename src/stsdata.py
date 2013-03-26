@@ -654,3 +654,9 @@ class STSData:
             outstream.write(str(rank)+" : "+str(score)+"\n")
             outstream.write(self.pairset[key].toString(type))
             rank+=1
+
+    def makecache(self,filename):
+        outstream = open(filename,'w')
+        for vector in self.vectordict:
+            vector.cache(outstream)
+        outstream.close()
