@@ -8,6 +8,7 @@ class WordVector:
 
     windows=True
     windowPATT=re.compile('T:.*')
+    filteredPATT=re.compile('___FILTERED___')
 
     def __init__(self, wordpos):
 
@@ -38,13 +39,18 @@ class WordVector:
                     else:
                         return False
                 else:
-                    if WordVector.windows==False:
-                        self.vector[feature]=float(score)
-                        self.width+=1
-                        self.length2+=float(score)*float(score)
-                        return True
-                    else:
+                    matchobj=WordVector.filteredPATT.match(feature)
+                    if matchobj:
+                        #ignore
                         return False
+                    else:
+                        if WordVector.windows==False:
+                            self.vector[feature]=float(score)
+                            self.width+=1
+                            self.length2+=float(score)*float(score)
+                            return True
+                        else:
+                            return False
 
 
 #    def update(self,featurelist):

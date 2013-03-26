@@ -237,7 +237,7 @@ class STSData:
         #print len(correlationx),len(correlationy)
         x=numpy.array(correlationx)
         y=numpy.array(correlationy)
-        thispoly= numpy.poly1d(numpy.polyfit(x,y,1))
+        thispoly= numpy.poly1d(numpy.polyfit(x,y,2))
 
         if excl==1 and self.show == True:
             pr=stats.spearmanr(x,y)
@@ -257,6 +257,50 @@ class STSData:
         plt.text(0.05,yl*0.8,mytext2)
         plt.show()
 
+    def testpoly(self,subset,excl,type):
+
+        #to generate and test regression line
+
+        thispoly = self.fitpoly(subset,excl,type)
+        #print thispoly
+
+        fileid =1
+        predictions=[]
+
+        gs=[]
+        carryon=True
+        #noones=0
+        #nozeroes=0
+
+        while carryon == True:
+            label = subset+"_"+str(fileid)
+            if label in self.pairset.keys():
+                if self.pairset[label].cvsplit== excl:
+                    predictions.append(thispoly(self.pairset[label].sim(type)))
+                    gs.append(self.pairset[label].gs)
+                    fileid+=1
+                else:
+                    #ignore
+
+                    fileid+=1
+            else:
+                carryon = False
+                #now to compute spearman correlation coefficient between gs and predictions
+
+        x=numpy.array(predictions)
+        y=numpy.array(gs)
+        #print len(x),len(y)
+        #sumzeroone=nozeroes+noones
+        #print nozeroes, noones, sumzeroone
+        #print x,y
+
+        #pr = stats.spearmanr(x,y)
+        pr=stats.pearsonr(x,y)
+        if excl==1 and self.show==True:
+            mytitle="Correlation for: "+subset+": "+str(excl)+": "+type
+            self.showpoly(x,y,numpy.poly1d(numpy.polyfit(x,y,1)),mytitle,pr,5,5)
+            #print pr
+        return pr
 
     def testpoly2(self,subset,excl,type1, type2):
 
@@ -313,36 +357,22 @@ class STSData:
 
 
 
-    def testread(self):
-        print "Testing"
-        print "Files read = "+str(self.filesread)
+    def testread(self,sim,dataset):
+
+        #print "Testing"
+        #print "Files read = "+str(self.filesread)
         if self.testing:
             print "Pairs stored = "+str(len(self.pairset))
             for p in self.pairset.values():
                 p.display()
-
+        #else:
+        #    for p in self.pairset.values():
+        #        p.display()
 
 
         #print "Average lemma overlap of content words is "+str(self.averagesim("lemma_content","all"))
-        print "Average lemma overlap of content words for MSRpar data is "+str(self.averagesim("lemma_content","MSRpar"))
-        if self.testing == False:
-            print "Average lemma overlap of content words for MSRvid data is "+str(self.averagesim("lemma_content","MSRvid"))
-            print "Average lemma overlap of content words for europarl data is "+str(self.averagesim("lemma_content","SMTeuroparl"))
+        print "Average "+sim+" for "+dataset+" data is "+str(self.averagesim(sim,dataset))
 
-        #print "Average gs overlap is "+str(self.averagesim("gs","all"))
-        print "Average gs overlap for MSRpar data is "+str(self.averagesim("gs","MSRpar"))
-        #print "Average gs overlap for MSRvid data is "+str(self.averagesim("gs","MSRvid"))
-        #print "Average gs overlap for europarl data is "+str(self.averagesim("gs","SMTeuroparl"))
-
-        if self.testing:
-            print "Average set sentence similarity for MSRpar data is "+str(self.averagesim("sent_set","MSRpar"))
-        else:
-            print "Average set sentence similarity for MSRpar data is "+str(self.averagesim("sent_set","MSRpar"))
-            print "Average set sentence similarity for MSRvid data is "+str(self.averagesim("sent_set","MSRvid"))
-            print "Average set sentence similarity for europarl data is "+str(self.averagesim("sent_set","SMTeuroparl"))
-            #print "Average composed sentence similarity for MSRpar data is "+str(self.averagesim("sent_comp","MSRpar"))
-            #print "Average composed sentence similarity for MSRvid data is "+str(self.averagesim("sent_comp","MSRvid"))
-            #print "Average composed sentence similarity for europarl data is "+str(self.averagesim("sent_comp","SMTeuroparl"))
 
     def vectordict_init(self):
         for pair in self.pairset.values():

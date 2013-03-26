@@ -5,6 +5,7 @@ from wordvector import WordVector
 class SentencePair:
     entrycount=0
     contentPOS=['N','V','J','R']
+    punctPOS=['.',',',';',':','!','?']
     def __init__(self, id, fid,testing):
         SentencePair.entrycount +=1
         self.lemmasA = []
@@ -17,6 +18,7 @@ class SentencePair:
         self.posB=[]
         self.lsim=-1
         self.wsim=-1
+        self.dsim=-1
         self.gs=-1
         self.cvsplit=-1
         self.prediction=-1
@@ -49,17 +51,17 @@ class SentencePair:
             self.posB.append(pos)
 
     def display(self):
-        print self.fid, self.id, self.cvsplit, self.gs, self.sim('lemma'), self.sim('lemma_content')
+        print self.fid, self.id, self.cvsplit, self.gs, self.sim('lemma'), self.sim('lemma_content'), self.sim('dinu_overlap')
         label=self.metric+"_"+self.comp
         if label in self.sentsim.keys():
             print self.sim('sent_comp')
         label = "set_"+self.metric+"_"+self.setsim
         if label in self.sentsim.keys():
             print self.sim('sent_set')
-        #print self.tokensA
-        #print self.tokensB
+        print self.tokensA
         print self.lemmasA
         print self.posA
+        print self.tokensB
         print self.lemmasB
         print self.posB
         #self.sentvector['A'].display()
@@ -67,36 +69,31 @@ class SentencePair:
 
     def toString(self,type):
         strep=self.fid+"\t"+str(self.id)+"\t"+str(self.gs)+"\t"+str(self.sim('lemma_content'))+"\t"+str(self.sim(type))+"\n"
-        strep=strep+str(self.lemmasA)+"\n"
-        strep=strep+str(self.lemmasB)+"\n"
+        strep=strep+str(self.returncontentlemmas('A'))+"\n"
+        strep=strep+str(self.returncontentlemmas('B'))+"\n"
         return strep
 
     def sim(self,type):
         ressim =-1
         if type == "lemma":
             ressim= self.lemmasim()
+        elif type == "gs":
+            ressim= self.gs
+        elif type == "token":
+            ressim=self.wordsim()
+        elif type == "lemma_content":
+            ressim=self.lemcontsim()
+        elif type=="token_content":
+            ressim=self.tokcontsim()
+        elif type=="dinu_overlap":
+            ressim=self.dinu_sim()
+        elif type=="sent_comp": #would be better to have metric and method in type?
+            ressim=self.getsentsim()
+
+        elif type =="sent_set":
+            ressim=self.getsetsim()
         else:
-            if type == "gs":
-                ressim= self.gs
-            else:
-
-                if type == "token":
-                    ressim=self.wordsim()
-                else:
-                    if type == "lemma_content":
-                        ressim=self.lemcontsim()
-                    else:
-                        if type=="token_content":
-                            ressim=self.tokcontsim()
-                        else:
-                            if type=="sent_comp": #would be better to have metric and method in type?
-                                ressim=self.getsentsim()
-
-                            else:
-                                if type =="sent_set":
-                                    ressim=self.getsetsim()
-                                else:
-                                    print "Error - unknown sim type: "+type
+            print "Error - unknown sim type: "+type
 #        if ressim <0 :
  #           print type+" similarity error for "
  #           self.display()
@@ -114,7 +111,7 @@ class SentencePair:
             if lemma in self.lemmasB:
                 Aoverlap +=1
         for lemma in self.lemmasB:
-            if lemma in self.lemmasB:
+            if lemma in self.lemmasA:
                 Boverlap +=1
         self.lsim = (Aoverlap+Boverlap)*1.0/(len(self.lemmasA)+len(self.lemmasB))
 
@@ -134,6 +131,33 @@ class SentencePair:
                     lemmalist.append((self.lemmasB[i],self.posB[i]))
         return lemmalist
 
+    def returncontenttokens(self,sent):
+        tokenlist=[]
+        if sent=='A':
+            for i in range(0,len(self.posA)):
+                if self.posA[i] in SentencePair.contentPOS:
+                    tokenlist.append(self.tokensA[i])
+        else:
+            for i in range(0,len(self.posB)):
+                if self.posB[i] in SentencePair.contentPOS:
+                    tokenlist.append(self.tokensB[i])
+        return tokenlist
+
+    def removepunct(self,sent):
+        tokenlist=[]
+        if sent=='A':
+            for i in range(0,len(self.posA)):
+                if self.posA[i] in SentencePair.punctPOS:
+                    check=True
+                else:
+                    tokenlist.append(self.tokensA[i])
+        else:
+            for i in range(0,len(self.posB)):
+                if self.posB[i] in SentencePair.punctPOS:
+                    check=True
+                else:
+                    tokenlist.append(self.tokensB[i])
+        return tokenlist
 
     def lemcontsim(self):
         if self.lcsim<0:
@@ -214,6 +238,21 @@ class SentencePair:
             if word in self.tokensA:
                 Boverlap+=1
         self.wsim=(Aoverlap+Boverlap)*1.0/(len(self.tokensA)+len(self.tokensB))
+
+    def dinu_sim(self):
+        if self.dsim<0:
+            self.dinu_overlap()
+        return self.dsim
+
+    def dinu_overlap(self):
+       # setA = set(self.tokensA)
+       # setB = set(self.tokensB)
+        setA= set(self.removepunct('A'))
+        setB= set(self.removepunct('B'))
+        intersection=len(setA & setB)
+        union = len(setA | setB)
+        self.dsim = (intersection*1.0)/(union*1.0)
+
 
     def compose(self,dict, method,metric):
         print "Warning - using deprecated method SentPair.compose()"
