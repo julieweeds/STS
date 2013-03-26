@@ -53,7 +53,7 @@ if toyrun:
     gsdirname=parent+"toy/gs"
     files=["all"]
     sims=["sent_set"]
-    cv_param=1
+    cv_param=2
     cv_repeat=1
 
 if windows:
