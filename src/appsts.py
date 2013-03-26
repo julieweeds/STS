@@ -6,19 +6,25 @@ from stsdata import STSData
 #set up configuration. Import configuration function
 import conf
 #pass commandline arguments
-(testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim,threshold,threshtype)=conf.configure(sys.argv)
+(testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim,threshold,threshtype,toyrun)=conf.configure(sys.argv)
 
 #uni filenames
 parent="/Volumes/LocalScratchHD/juliewe/Documents/workspace/STS/data/"
 
 if at_home:
-    parent="C:/Users/Julie/Documents/sussex/STS/data/"
+    parent="C:/Users/Julie/Documents/GitHub/STS/data/"
 
 if on_apollo:
     parent="/mnt/lustre/scratch/inf/juliewe/STS/data/"
 
 datadirname=parent+"trial/STS2012-train/STSinput-tagged"
 gsdirname=parent+"trial/STS2012-train/gs"
+
+if toyrun==True:
+    datadirname=parent+"toy/toy-tagged"
+    gsdirname=parent+"toy/gs"
+
+
 if filtered==True:
     vectorfilename=parent+"vectors_gw_filt/vectors_mi"
 else:
