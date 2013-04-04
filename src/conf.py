@@ -14,7 +14,7 @@ def configure(arguments):
 
     windows=False
 #filtered vectors
-    filtered=True
+    filtered=False
 #composition type
     comptype="additive"
 #similarity metric
@@ -65,6 +65,10 @@ def configure(arguments):
             toyrun = True
         elif argument == "use_cache":
             use_cache=True
+        elif argument == "filtered":
+            filtered=True
+        elif argument == "unfiltered":
+            filtered=False
         else:
             matchobj = thresholdPATT.match(argument)
             if matchobj:

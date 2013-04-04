@@ -243,7 +243,7 @@ class STSData:
         #print len(correlationx),len(correlationy)
         x=numpy.array(correlationx)
         y=numpy.array(correlationy)
-        thispoly= numpy.poly1d(numpy.polyfit(x,y,2))
+        thispoly= numpy.poly1d(numpy.polyfit(x,y,1))
 
         if excl==1 and self.show == True:
             pr=stats.spearmanr(x,y)
@@ -301,7 +301,7 @@ class STSData:
         #print x,y
 
         #pr = stats.spearmanr(x,y)
-        pr=stats.pearsonr(x,y)
+        pr=stats.spearmanr(x,y)
         if excl==1 and self.show==True:
             mytitle="Correlation for: "+subset+": "+str(excl)+": "+type
             self.showpoly(x,y,numpy.poly1d(numpy.polyfit(x,y,1)),mytitle,pr,5,5)
