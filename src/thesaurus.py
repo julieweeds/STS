@@ -6,7 +6,7 @@ import re
 import sys
 import numpy
 import scipy.sparse as sparse
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import scipy.stats as stats
 
 class Thesaurus:
