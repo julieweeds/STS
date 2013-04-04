@@ -13,7 +13,7 @@ class Thesaurus:
 
     wordposPATT = re.compile('(.*)/(.)') #only first char of POS
 
-    def __init__(self,vectorfilename,simcachefile,simcache):
+    def __init__(self,vectorfilename,simcachefile,simcache,windows):
         self.vectorfilename=vectorfilename
         self.simcachefile=simcachefile
         self.simcache=simcache
@@ -23,6 +23,7 @@ class Thesaurus:
         self.fkeys=[] #list (to be sorted) of all features to
         self.fk_idx={} #feature --> dimension
         self.dim=0
+        WordVector.windows=windows
 
     def readvectors(self):
         if self.simcache:

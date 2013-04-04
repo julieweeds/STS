@@ -33,7 +33,7 @@ if use_cache:
 
 simcache=False #whether file currently contains valid sims
 
-mythes=Thesaurus(vectorfilename,simcachefile,simcache)
+mythes=Thesaurus(vectorfilename,simcachefile,simcache,windows)
 mythes.readvectors()
 mythes.allpairssims()
 mythes.analyse()
