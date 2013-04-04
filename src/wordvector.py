@@ -19,6 +19,10 @@ class WordVector:
         self.width=0
         self.length=0
         self.array=""
+        self.allsims={}
+        self.topsim=-1.0
+        self.avgsim=-1.0
+        self.sd=-1.0
 
 
     def addfeature(self,feature,score):
@@ -156,4 +160,33 @@ class WordVector:
         outstream.write(self.word+"/"+self.pos)
         for feature in self.vector.keys():
             outstream.write("\t"+feature+"\t"+str(self.vector[feature]))
+        outstream.write("\n")
+
+    def equals(self,avector):
+        #check if it is the same word/pos
+        if self.word == avector.word:
+            if self.pos == avector.pos:
+                return True
+        return False
+
+    def analyse(self):
+        total =0.0
+        count=0
+        max=0.0
+        squares=0.0
+        for sim in self.allsims.values():
+            if sim > max:
+                max = sim
+            total+=sim
+            count+=1
+            squares+=sim*sim
+
+        self.topsim=max
+        self.avgsim=total/count
+        self.sd=pow(squares/count - self.avgsim*self.avgsim,0.5)
+
+    def outputsims(self,outstream):
+        outstream.write(self.word+"/"+self.pos+"\t"+str(self.width)+"\t"+str(self.length))
+        for word in self.allsims.keys():
+            outstream.write("\t"+word+"\t"+str(self.allsims[word]))
         outstream.write("\n")
