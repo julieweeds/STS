@@ -31,9 +31,10 @@ if use_cache:
     vectorfilename=cachename
 
 
-simcache=False #whether file currently contains valid sims
+simcache=True #whether file currently contains valid sims
+k=100
 
-mythes=Thesaurus(vectorfilename,simcachefile,simcache,windows)
+mythes=Thesaurus(vectorfilename,simcachefile,simcache,windows,k)
 mythes.readvectors()
 mythes.allpairssims()
 mythes.analyse()

@@ -6,17 +6,18 @@ import re
 import sys
 import numpy
 import scipy.sparse as sparse
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import scipy.stats as stats
 
 class Thesaurus:
 
     wordposPATT = re.compile('(.*)/(.)') #only first char of POS
 
-    def __init__(self,vectorfilename,simcachefile,simcache,windows):
+    def __init__(self,vectorfilename,simcachefile,simcache,windows,k):
         self.vectorfilename=vectorfilename
         self.simcachefile=simcachefile
         self.simcache=simcache
+        self.thisvector=""
         self.vectordict={} #dictionary of vectors
         self.allfeatures={} #dictionary of all feature dimensions
         self.updated=0
@@ -24,6 +25,7 @@ class Thesaurus:
         self.fk_idx={} #feature --> dimension
         self.dim=0
         WordVector.windows=windows
+        self.k=k
 
     def readvectors(self):
         if self.simcache:
@@ -83,9 +85,10 @@ class Thesaurus:
         for line in instream:
             self.processsimline(line.rstrip())
             linesread+=1
-            if (linesread%10000 == 0):
-                print "Read "+str(linesread)+" lines and updated "+str(self.updated)+" vectors"
+            if (linesread%100 == 0):
+                print "Read "+str(linesread)+" lines and updated "+str(self.updated)+" similarity vectors"
                 sys.stdout.flush()
+                #exit(1)
 
         print "Read "+str(linesread)+" lines and updated "+str(self.updated)+" vectors"
         instream.close()
@@ -101,20 +104,24 @@ class Thesaurus:
             return
 
 
-        self.vectordict[wordpos]=WordVector(wordpos) #initialise WordVector in vector dictionary
+        #self.vectordict[wordpos]=WordVector(wordpos) #initialise WordVector in vector dictionary
+        self.thisvector=WordVector(wordpos)
 
         featurelist.reverse() #reverse list so can pop features and scores off
         featurelist.pop() #take off last item which is word itself
-        self.vectordict[wordpos].width=featurelist.pop()
-        self.vectordict[wordpos].length=featurelist.pop()
+        self.thisvector.width=featurelist.pop()
+        self.thisvector.length=featurelist.pop()
         self.updatesimvector(wordpos,featurelist)
+        self.thisvector.topk(self.k)
+        self.vectordict[wordpos]=self.thisvector
+        #self.vectordict[wordpos].displaysims()
         self.updated+=1
 
     def updatesimvector(self,wordpos,featurelist):
         while(len(featurelist)>0):
             f=featurelist.pop()
             sc=featurelist.pop()
-            self.vectordict[wordpos].allsims[f]=sc
+            self.thisvector.allsims[f]=sc
 
 
     def makematrix(self):
@@ -147,7 +154,11 @@ class Thesaurus:
     def allpairssims(self):
         if self.simcache:
             #read in from sim cache
-            self.readsims(self.simcachefile)
+            self.readsims()
+            outstream=open(self.simcachefile,'w')
+            for wordvectorA in self.vectordict.values():
+                wordvectorA.outputsims(outstream)
+            outstream.close()
         else:
             outstream=open(self.simcachefile,'w')
             #compute all pairs sims and write sim cache
@@ -188,9 +199,9 @@ class Thesaurus:
             squaretop+=wordvectorA.topsim*wordvectorA.topsim
             totalavg+=wordvectorA.avgsim
             squareavg+=wordvectorA.avgsim*wordvectorA.avgsim
-            correlationx.append(wordvectorA.width)
-            correlationy1.append(wordvectorA.topsim)
-            correlationy2.append(wordvectorA.avgsim)
+            correlationx.append(float(wordvectorA.width))
+            correlationy1.append(float(wordvectorA.topsim))
+            correlationy2.append(float(wordvectorA.avgsim))
 
         avgtop=totaltop/count
         sdtop=pow(squaretop/count - avgtop*avgtop,0.5)
@@ -200,14 +211,21 @@ class Thesaurus:
         print "Top similarity: average = "+str(avgtop)+" sd = "+str(sdtop)
         print "average similarity: average = "+str(avgavg)+" sd = "+str(sdavg)
 
+
+        #print correlationx
+        #print correlationy1
         x=numpy.array(correlationx)
         y=numpy.array(correlationy1)
+
+        #print x
+        #print y
+
         thispoly= numpy.poly1d(numpy.polyfit(x,y,1))
 
 
         pr=stats.spearmanr(x,y)
         mytitle="Regression line for width and top similarity"
-        #self.showpoly(x,y,thispoly,mytitle,pr,1,5)
+        self.showpoly(x,y,thispoly,mytitle,pr,1,1)
         print "SRCC for width and top similarity is "+str(pr[0])+" ("+str(pr[1])+")"
         print thispoly
 
@@ -218,7 +236,7 @@ class Thesaurus:
 
         pr=stats.spearmanr(x,y)
         mytitle="Regression line for width and average similarity"
-        #self.showpoly(x,y,thispoly,mytitle,pr,1,5)
+        self.showpoly(x,y,thispoly,mytitle,pr,1,1)
         print "SRCC for width and average similarity is "+str(pr[0])+" ("+str(pr[1])+")"
         print thispoly
 

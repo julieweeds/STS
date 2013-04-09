@@ -3,10 +3,11 @@ __author__ = 'juliewe'
 import re
 import numpy
 import scipy
+import scipy.sparse as sparse
 
 class WordVector:
 
-    windows=True
+    windows=False
     windowPATT=re.compile('T:.*')
     filteredPATT=re.compile('___FILTERED___')
 
@@ -26,7 +27,7 @@ class WordVector:
 
 
     def addfeature(self,feature,score):
-        if float(score) <=0:
+        if float(score) <=-5:
             return False
         else:
             if feature in self.vector:
@@ -117,6 +118,8 @@ class WordVector:
     def findsim(self,avector,metric):
         if metric =="cosine":
             return self.cossim_array(avector)
+        elif metric =="lin":
+            return self.linsim_array(avector)
         else:
             print "Unknown similarity metric "+metric
 
@@ -156,6 +159,22 @@ class WordVector:
         #print sim
         return sim
 
+    def linsim_array(self,avector):
+        #computes lin similarities over arrays
+        den = self.array + avector.array
+        denominator = den.sum()
+        a = self.array.copy()
+        b = avector.array.copy()
+        a = a/1000
+        a.ceil()
+        b=b/1000
+        b.ceil()
+        intersection = a * b
+        num = intersection * den
+        numerator = num.sum()
+        sim = numerator/denominator
+        return sim
+
     def makecache(self,outstream):
         outstream.write(self.word+"/"+self.pos)
         for feature in self.vector.keys():
@@ -177,7 +196,7 @@ class WordVector:
         for sim in self.allsims.values():
             if sim > max:
                 max = sim
-            total+=sim
+            total+=float(sim)
             count+=1
             squares+=sim*sim
 
@@ -190,3 +209,23 @@ class WordVector:
         for word in self.allsims.keys():
             outstream.write("\t"+word+"\t"+str(self.allsims[word]))
         outstream.write("\n")
+
+    def displaysims(self):
+        print(self.word+"/"+self.pos+"\t"+str(self.width)+"\t"+str(self.length))
+        for word in self.allsims.keys():
+            print("\t"+word+"\t"+str(self.allsims[word]))
+        print("\n")
+
+    def topk(self,k):
+        #only retain top k neighbours
+
+        tuplelist=[]
+        for item in self.allsims.keys():
+            tuplelist.append((float(self.allsims[item]),item))
+        tuplelist.sort()
+        self.allsims={}
+        done=0
+        while done < k:
+            (sim,word)=tuplelist.pop()
+            self.allsims[word]=float(sim)
+            done+=1
