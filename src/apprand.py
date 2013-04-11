@@ -15,21 +15,28 @@ import sys
 
 class AppRand:
 
-    def __init__(self,lower_limit,upper_limit,metric):
+    def __init__(self,a,b,metric):
         self.n=100
+        self.runs=100
         self.vectordict={}
-        random.seed(42)
+        random.seed(666)
         self.allfeatures=[]
         self.fk_idx={}
         dim=0
-        while dim<2*self.n:
+        while dim<1*self.n:
             label="feature_"+str(dim)
             self.allfeatures.append(label)
             dim+=1
 
-        self.llim=lower_limit
-        self.ulim=upper_limit
+        self.llim=a
+        self.ulim=b
+        self.mu=a
+        self.sigma=b
         self.metric = metric
+        self.width=0
+        self.widths=[]
+        self.ex=[]
+        self.sd=[]
 
     def makematrix(self):
         fkeys = list(self.allfeatures)
@@ -68,24 +75,60 @@ class AppRand:
         #set up vectors
         done =0
         while done<self.n:
-            label="Word_"+str(done)
-            self.vectordict[label]=WordVector((label,"N"))
-            dim=0
-            features=list(self.allfeatures)
-            random.shuffle(features)
-            #print len(features)
-            while dim<=done:
-                self.vectordict[label].addfeature(features.pop(),random.uniform(self.llim,self.ulim))
-                dim+=1
+            self.width=done+1
+            self.vectordict={}
+
+            tests=0
+            while tests<self.runs:
+
+                label="Word_"+str(tests)
+                self.vectordict[label]=WordVector((label,"N"))
+                dim=0
+                features=list(self.allfeatures)
+                random.shuffle(features)
+                #print len(features)
+                while dim<=done:
+                    #self.vectordict[label].addfeature(features.pop(),random.uniform(self.llim,self.ulim))
+                    self.vectordict[label].addfeature(features.pop(),abs(random.gauss(self.mu,self.sigma)))
+                    dim+=1
+
+                tests+=1
             done+=1
 
-        #convert to arrays
-        self.makematrix()
-        self.allpairsims()
-        for wordvector in self.vectordict.values():
-            wordvector.analyse()
+            #convert to arrays
+            self.makematrix()
+            self.allpairsims()
+            for wordvector in self.vectordict.values():
+                wordvector.analyse()
 
-        self.analyse()
+            (avg,sd)=self.analyse2()
+            self.widths.append(self.width)
+            self.ex.append(avg)
+            self.sd.append(sd)
+        x=numpy.array(self.widths)
+        y=numpy.array(self.ex)
+
+        thispoly= numpy.poly1d(numpy.polyfit(x,y,1))
+
+
+        pr=stats.spearmanr(x,y)
+        mytitle="Regression line for width and Expected Similarity using "+self.metric
+        self.showpoly(x,y,thispoly,mytitle,pr,1,1)
+        print "SRCC for width and top similarity is "+str(pr[0])+" ("+str(pr[1])+")"
+        print thispoly
+
+        y=numpy.array(self.sd)
+
+        thispoly= numpy.poly1d(numpy.polyfit(x,y,1))
+
+
+        pr=stats.spearmanr(x,y)
+        mytitle="Regression line for width and Standard Deviation of Similarity Scores using "+self.metric
+        self.showpoly(x,y,thispoly,mytitle,pr,1,1)
+        print "SRCC for width and SD is "+str(pr[0])+" ("+str(pr[1])+")"
+        print thispoly
+
+
 
     def allpairsims(self):
 
@@ -105,62 +148,83 @@ class AppRand:
             done+=1
             if done%10==0: print "Completed similarity calculations for "+str(done)+" words"
 
-    def analyse(self):
-        totaltop=0.0
-        totalavg=0.0
-        squaretop=0.0
-        squareavg=0.0
+
+#    def analyse(self):
+#        totaltop=0.0
+#        totalavg=0.0
+#        squaretop=0.0
+#        squareavg=0.0
+#        count=0
+#        correlationx=[]
+#        correlationy1=[]
+#        correlationy2=[]
+#
+#        for wordvectorA in self.vectordict.values():
+#            count+=1
+#            totaltop+=wordvectorA.topsim
+#            squaretop+=wordvectorA.topsim*wordvectorA.topsim
+#            totalavg+=wordvectorA.avgsim
+#            squareavg+=wordvectorA.avgsim*wordvectorA.avgsim
+#            correlationx.append(float(wordvectorA.width))
+#            correlationy1.append(float(wordvectorA.topsim))
+#            correlationy2.append(float(wordvectorA.avgsim))
+#
+#        avgtop=totaltop/count
+#        sdtop=pow(squaretop/count - avgtop*avgtop,0.5)
+#        avgavg=totalavg/count
+#        sdavg=pow(squareavg/count-avgavg*avgavg,0.5)
+#
+#        print "Top similarity: average = "+str(avgtop)+" sd = "+str(sdtop)
+#        print "average similarity: average = "+str(avgavg)+" sd = "+str(sdavg)
+#
+#
+#        #print correlationx
+#        #print correlationy1
+#        x=numpy.array(correlationx)
+#        y=numpy.array(correlationy1)
+#
+#        #print x
+#        #print y
+#
+#        thispoly= numpy.poly1d(numpy.polyfit(x,y,1))
+#
+#
+#        pr=stats.spearmanr(x,y)
+#        mytitle="Regression line for width and top similarity"
+#        self.showpoly(x,y,thispoly,mytitle,pr,1,1)
+#        print "SRCC for width and top similarity is "+str(pr[0])+" ("+str(pr[1])+")"
+#        print thispoly
+#
+#        x=numpy.array(correlationx)
+#        y=numpy.array(correlationy2)
+#        thispoly= numpy.poly1d(numpy.polyfit(x,y,1))
+#
+#
+#        pr=stats.spearmanr(x,y)
+#        mytitle="Regression line for width and average similarity"
+#        self.showpoly(x,y,thispoly,mytitle,pr,1,1)
+#        print "SRCC for width and average similarity is "+str(pr[0])+" ("+str(pr[1])+")"
+#        print thispoly
+
+    def analyse2(self):
+        total=0.0
+        square=0.0
         count=0
-        correlationx=[]
-        correlationy1=[]
-        correlationy2=[]
 
         for wordvectorA in self.vectordict.values():
-            count+=1
-            totaltop+=wordvectorA.topsim
-            squaretop+=wordvectorA.topsim*wordvectorA.topsim
-            totalavg+=wordvectorA.avgsim
-            squareavg+=wordvectorA.avgsim*wordvectorA.avgsim
-            correlationx.append(float(wordvectorA.width))
-            correlationy1.append(float(wordvectorA.topsim))
-            correlationy2.append(float(wordvectorA.avgsim))
+            count+=wordvectorA.nosims
+            total+=wordvectorA.totalsim
+            square+=wordvectorA.squaretotal
 
-        avgtop=totaltop/count
-        sdtop=pow(squaretop/count - avgtop*avgtop,0.5)
-        avgavg=totalavg/count
-        sdavg=pow(squareavg/count-avgavg*avgavg,0.5)
-
-        print "Top similarity: average = "+str(avgtop)+" sd = "+str(sdtop)
-        print "average similarity: average = "+str(avgavg)+" sd = "+str(sdavg)
+        avg=total/count
+        sd=pow(square/count - avg*avg,0.5)
 
 
-        #print correlationx
-        #print correlationy1
-        x=numpy.array(correlationx)
-        y=numpy.array(correlationy1)
-
-        #print x
-        #print y
-
-        thispoly= numpy.poly1d(numpy.polyfit(x,y,1))
+        print "Width "+str(self.width)+" expected similarity = "+str(avg)+" sd = "+str(sd)
+        return (avg,sd)
 
 
-        pr=stats.spearmanr(x,y)
-        mytitle="Regression line for width and top similarity"
-        self.showpoly(x,y,thispoly,mytitle,pr,1,1)
-        print "SRCC for width and top similarity is "+str(pr[0])+" ("+str(pr[1])+")"
-        print thispoly
 
-        x=numpy.array(correlationx)
-        y=numpy.array(correlationy2)
-        thispoly= numpy.poly1d(numpy.polyfit(x,y,1))
-
-
-        pr=stats.spearmanr(x,y)
-        mytitle="Regression line for width and average similarity"
-        self.showpoly(x,y,thispoly,mytitle,pr,1,1)
-        print "SRCC for width and average similarity is "+str(pr[0])+" ("+str(pr[1])+")"
-        print thispoly
 
 
     def showpoly(self,x,y,poly,title,pr,xl,yl):

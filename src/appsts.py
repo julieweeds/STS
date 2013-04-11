@@ -31,10 +31,11 @@ cv_param=10
 cv_repeat=10
 k=1.96 #for 95% confidence intervals
 files=["MSRpar","MSRvid","SMTeuroparl"]
+#files=["MSRvid"]
 #sims=["lemma_content","sent_set","sent_comp"]
 #sims=["dinu_overlap"]
-sims=["lemma_content","dinu_overlap","sent_set","sent_comp"]
-baseline="none"
+sims=["sent_set"]
+baseline="lemma_content"
 graphson=False
 verbose=False
 
@@ -102,7 +103,7 @@ def do_correlation(mydata):
             if baseline=="none":
                 print "Starting next run"
             else:
-                outfile=parent+"logs/ranking_"+f+"_"+type+"_"+setsim+"_"+threshtype+"_"+str(threshold)
+                outfile=parent+"logs/ranking_"+f+"_"+type+"_"+setsim+"_"+str(windows)
                 outstream=open(outfile,'w')
                 mydata.ranksent(f,type,cv_repeat,outstream)
                 outstream.close()
@@ -134,6 +135,7 @@ if "sent_comp" in sims:
 for sim in sims:
     for dataset in files:
         mydata.testread(sim,dataset)
+mydata.inspect()
 if toyrun:
     mydata.inspect()
 else:

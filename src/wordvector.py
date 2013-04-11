@@ -10,6 +10,8 @@ class WordVector:
     windows=False
     windowPATT=re.compile('T:.*')
     filteredPATT=re.compile('___FILTERED___')
+    beta=0
+    gamma=0
 
     def __init__(self, wordpos):
 
@@ -24,6 +26,10 @@ class WordVector:
         self.topsim=-1.0
         self.avgsim=-1.0
         self.sd=-1.0
+        self.nosims=0
+        self.totalsim=0
+        self.square=0
+
 
 
     def addfeature(self,feature,score):
@@ -119,7 +125,9 @@ class WordVector:
         if metric =="cosine":
             return self.cossim_array(avector)
         elif metric =="lin":
-            return self.linsim_array(avector)
+            return self.linsim(avector)
+        elif metric =="cr":
+            return self.cr(avector,WordVector.beta,WordVector.gamma)
         else:
             print "Unknown similarity metric "+metric
 
@@ -159,8 +167,52 @@ class WordVector:
         #print sim
         return sim
 
+    def linsim(self,avector):
+
+        intersect = set(self.vector.keys()).intersection(set(avector.vector.keys()))
+
+        den=0
+        num=0
+        for feature in self.vector.keys():
+            den = den+self.vector[feature]
+        for feature in avector.vector.keys():
+            den = den+avector.vector[feature]
+        for feature in intersect:
+            num = num + self.vector[feature]+avector.vector[feature]
+        sim = (num*1.0)/(den*1.0)
+        return sim
+
+    def precision(self,avector):
+
+        intersect = set(self.vector.keys()).intersection(set(avector.vector.keys()))
+
+        den = 0
+        num =0
+        for feature in self.vector.keys():
+            den = den +self.vector[feature]
+            #den = den + 1
+        for feature in intersect:
+            num = num + min(self.vector[feature],avector.vector[feature])
+            #num = num + 1
+        sim = (num*1.0)/(den*1.0)
+        return sim
+
+    def cr(self,avector,beta,gamma):
+
+        pre = float(self.precision(avector))
+        rec = float(avector.precision(self))
+        if pre*rec == 0:
+            hm =0
+        else:
+            hm = pre*rec/(pre+rec)
+        am = beta *pre + (1-beta)*rec
+        sim = gamma *hm + (1-gamma)*am
+        return sim
+
+
     def linsim_array(self,avector):
         #computes lin similarities over arrays
+        #doesn't work because can't find ceil() function?
         den = self.array + avector.array
         denominator = den.sum()
         a = self.array.copy()
@@ -202,7 +254,9 @@ class WordVector:
 
         self.topsim=max
         self.avgsim=total/count
-        self.sd=pow(squares/count - self.avgsim*self.avgsim,0.5)
+        self.totalsim=total
+        self.squaretotal=squares
+        self.nosims=count
 
     def outputsims(self,outstream):
         outstream.write(self.word+"/"+self.pos+"\t"+str(self.width)+"\t"+str(self.length))
