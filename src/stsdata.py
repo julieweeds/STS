@@ -489,6 +489,7 @@ class STSData:
         del self.fkeys
         del self.allfeatures
         self.dim=len(self.fk_idx)
+        WordVector.dim=self.dim
         print "Dimensionality is "+ str(self.dim)
         self.makearrays()
 

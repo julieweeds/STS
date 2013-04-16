@@ -69,6 +69,12 @@ def configure(arguments):
             filtered=True
         elif argument == "unfiltered":
             filtered=False
+        elif argument == "lin":
+            metric="lin"
+        elif argument == "cosine":
+            metric="cosine"
+        elif argument == "binprob":
+            metric="binprob"
         else:
             matchobj = thresholdPATT.match(argument)
             if matchobj:

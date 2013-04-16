@@ -4,6 +4,8 @@ import re
 import numpy
 import scipy
 import scipy.sparse as sparse
+from scipy.stats import binom
+import math
 
 class WordVector:
 
@@ -12,6 +14,7 @@ class WordVector:
     filteredPATT=re.compile('___FILTERED___')
     beta=0
     gamma=0
+    dim = -1 #dimensionality will be set once all vectors read in
 
     def __init__(self, wordpos):
 
@@ -128,6 +131,8 @@ class WordVector:
             return self.linsim(avector)
         elif metric =="cr":
             return self.cr(avector,WordVector.beta,WordVector.gamma)
+        elif metric =="binprob":
+            return self.simprob(avector)
         else:
             print "Unknown similarity metric "+metric
 
@@ -226,6 +231,19 @@ class WordVector:
         numerator = num.sum()
         sim = numerator/denominator
         return sim
+
+    def simprob(self,avector):
+        #function to calculate binomial probability of getting sim or less by chance given widths of vectors
+
+        mywidth=self.width
+        awidth=avector.width
+        #width = (mywidth+awidth)*0.5
+        n=awidth
+        p=mywidth/WordVector.dim
+        sim = self.linsim(avector)
+        r= math.floor(sim*awidth)
+        prob = binom.cdf(r,n,p)
+        return prob
 
     def makecache(self,outstream):
         outstream.write(self.word+"/"+self.pos)

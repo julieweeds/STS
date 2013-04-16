@@ -16,7 +16,7 @@ import sys
 class AppRand:
 
     def __init__(self,a,b,metric):
-        self.n=100
+        self.n=1000
         self.runs=100
         self.vectordict={}
         random.seed(666)
@@ -47,6 +47,7 @@ class AppRand:
         self.dim=len(self.fk_idx)
         #print self.fk_idx
         print "Dimensionality is "+ str(self.dim)
+        WordVector.dim=self.dim
         self.makearrays()
 
     def makearrays(self):

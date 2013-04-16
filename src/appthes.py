@@ -20,7 +20,7 @@ datadirname=parent+"trial/STS2012-train/STSinput-tagged"
 
 
 if windows:
-    cachename=datadirname+"/../win_vectors.cached"
+    cachename=datadirname+"/../win_vectors.some"
     simcachefile=datadirname+"/../win_sims.cached"
 else:
     cachename=datadirname+"/../dep_vectors.cached"
@@ -31,10 +31,16 @@ if use_cache:
     vectorfilename=cachename
 
 
-simcache=True #whether file currently contains valid sims
+words=[("man","N"),("woman","N"),("lady","N"),("gentleman","N"),("light","N")]
+
+simcache=False #whether file currently contains valid sims
 k=100
 
 mythes=Thesaurus(vectorfilename,simcachefile,simcache,windows,k)
 mythes.readvectors()
-mythes.allpairssims()
+for wordA in words:
+    for wordB in words:
+        mythes.outputsim(wordA,wordB,metric)
+mythes.allpairssims(metric)
+
 mythes.analyse()

@@ -133,6 +133,7 @@ class Thesaurus:
         del self.allfeatures
         self.dim=len(self.fk_idx)
         print "Dimensionality is "+ str(self.dim)
+        WordVector.dim=self.dim
         self.makearrays()
 
     def makearrays(self):
@@ -151,7 +152,7 @@ class Thesaurus:
             #print wordvector.array.data
             # print "Converted "+wordvector.word+"/"+wordvector.pos
 
-    def allpairssims(self):
+    def allpairssims(self,metric):
         if self.simcache:
             #read in from sim cache
             self.readsims()
@@ -171,7 +172,7 @@ class Thesaurus:
                         same =True
                     else:
                         label = wordvectorB.word+"_"+wordvectorB.pos
-                        wordvectorA.allsims[label]=wordvectorA.cossim_array(wordvectorB)
+                        wordvectorA.allsims[label]=wordvectorA.findsim(wordvectorB,metric)
 
                 wordvectorA.outputsims(outstream)
 
@@ -182,6 +183,25 @@ class Thesaurus:
         for wordvectorA in self.vectordict.values():
             wordvectorA.analyse()
 
+    def outputsim(self,wordA,wordB,metric):
+        sim =-1
+        if wordA in self.vectordict.keys():
+            vectorA = self.vectordict[wordA]
+
+            if wordB in self.vectordict.keys():
+                vectorB = self.vectordict[wordB]
+                sim = vectorA.findsim(vectorB,metric)
+
+            else:
+                print wordB +" not in dictionary"
+
+        else:
+            print wordA +" not in dictionary"
+
+
+
+        print "Similarity between "+vectorA.word+"/"+vectorA.pos+" and "+vectorB.word +"/"+vectorB.pos+" is "+str(sim)
+        print "("+str(vectorA.width) + ", "+str(vectorB.width)+")"
 
     def analyse(self):
         totaltop=0.0

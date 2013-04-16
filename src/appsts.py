@@ -135,7 +135,7 @@ if "sent_comp" in sims:
 for sim in sims:
     for dataset in files:
         mydata.testread(sim,dataset)
-mydata.inspect()
+#mydata.inspect()
 if toyrun:
     mydata.inspect()
 else:
