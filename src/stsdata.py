@@ -10,6 +10,7 @@ import scipy.stats as stats
 import sys
 import scipy.sparse as sparse
 import operator
+from wordvector import update_dim
 
 #import matplotlib.pyplot as plt
 
@@ -489,7 +490,7 @@ class STSData:
         del self.fkeys
         del self.allfeatures
         self.dim=len(self.fk_idx)
-        WordVector.dim=self.dim
+        update_dim(self.dim)
         print "Dimensionality is "+ str(self.dim)
         self.makearrays()
 

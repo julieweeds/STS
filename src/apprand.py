@@ -3,6 +3,7 @@ __author__ = 'Julie'
 #generate random vectors of dimensionality 1 .. n to examine width correlation properties
 
 from wordvector import WordVector
+from wordvector import update_dim
 import random
 import numpy
 import scipy.sparse as sparse
@@ -16,7 +17,7 @@ import sys
 class AppRand:
 
     def __init__(self,a,b,metric):
-        self.n=1000
+        self.n=100
         self.runs=100
         self.vectordict={}
         random.seed(666)
@@ -47,7 +48,7 @@ class AppRand:
         self.dim=len(self.fk_idx)
         #print self.fk_idx
         print "Dimensionality is "+ str(self.dim)
-        WordVector.dim=self.dim
+        update_dim(self.dim)
         self.makearrays()
 
     def makearrays(self):
@@ -74,7 +75,7 @@ class AppRand:
         #set up dimension labels
 
         #set up vectors
-        done =0
+        done =3
         while done<self.n:
             self.width=done+1
             self.vectordict={}
@@ -235,8 +236,8 @@ class AppRand:
         plt.title(title)
         mytext1="srcc = "+str(pr[0])
         mytext2="p = "+str(pr[1])
-        plt.text(0.05,yl*0.9,mytext1)
-        plt.text(0.05,yl*0.8,mytext2)
+        plt.text(0.05,yl*0.3,mytext1)
+        plt.text(0.05,yl*0.2,mytext2)
         plt.show()
 
 

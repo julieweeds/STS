@@ -2,6 +2,7 @@ __author__ = 'juliewe'
 
 
 from wordvector import WordVector
+from wordvector import update_dim
 import re
 import sys
 import numpy
@@ -133,7 +134,7 @@ class Thesaurus:
         del self.allfeatures
         self.dim=len(self.fk_idx)
         print "Dimensionality is "+ str(self.dim)
-        WordVector.dim=self.dim
+        update_dim(self.dim)
         self.makearrays()
 
     def makearrays(self):

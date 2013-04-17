@@ -7,6 +7,15 @@ import scipy.sparse as sparse
 from scipy.stats import binom
 import math
 
+def update_dim(dim):
+    WordVector.dim=dim
+    adj=dim/2.0
+    WordVector.adj_constant = adj/2
+#    WordVector.adj_constant=math.sqrt(adj)
+#    WordVector.adj_constant=math.log(dim/2.0,2)
+
+
+
 class WordVector:
 
     windows=False
@@ -15,6 +24,7 @@ class WordVector:
     beta=0
     gamma=0
     dim = -1 #dimensionality will be set once all vectors read in
+    adj_constant = -1
 
     def __init__(self, wordpos):
 
@@ -133,6 +143,8 @@ class WordVector:
             return self.cr(avector,WordVector.beta,WordVector.gamma)
         elif metric =="binprob":
             return self.simprob(avector)
+        elif metric =="linadj":
+            return self.linadj(avector)
         else:
             print "Unknown similarity metric "+metric
 
@@ -244,6 +256,23 @@ class WordVector:
         r= math.floor(sim*awidth)
         prob = binom.cdf(r,n,p)
         return prob
+
+    def linadj(self,avector):
+        # function to adjust lin similarity given widths of distributions
+
+        mywidth = self.width
+        awidth=avector.width
+
+        adj1=mywidth*awidth*1.0/(mywidth+awidth)
+#        adj=math.log(adj1,2)
+#        adj= math.sqrt(adj1)
+        adj = adj1
+        if adj == 0:
+            #print mywidth, awidth, adj1, adj
+            adj = 0.5
+        sim = self.linsim(avector)
+        sim = sim * WordVector.adj_constant/adj
+        return sim
 
     def makecache(self,outstream):
         outstream.write(self.word+"/"+self.pos)
