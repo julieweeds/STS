@@ -2,7 +2,7 @@ __author__ = 'juliewe'
 
 
 from wordvector import WordVector
-from wordvector import update_dim
+from wordvector import update_params
 import re
 import sys
 import numpy
@@ -14,7 +14,7 @@ class Thesaurus:
 
     wordposPATT = re.compile('(.*)/(.)') #only first char of POS
 
-    def __init__(self,vectorfilename,simcachefile,simcache,windows,k):
+    def __init__(self,vectorfilename,simcachefile,simcache,windows,k,adja,adjb):
         self.vectorfilename=vectorfilename
         self.simcachefile=simcachefile
         self.simcache=simcache
@@ -27,6 +27,8 @@ class Thesaurus:
         self.dim=0
         WordVector.windows=windows
         self.k=k
+        self.adja=adja
+        self.adjb=adjb
 
     def readvectors(self):
         if self.simcache:
@@ -134,7 +136,7 @@ class Thesaurus:
         del self.allfeatures
         self.dim=len(self.fk_idx)
         print "Dimensionality is "+ str(self.dim)
-        update_dim(self.dim)
+        update_params(self.dim,self.adja,self.adjb)
         self.makearrays()
 
     def makearrays(self):
@@ -192,17 +194,20 @@ class Thesaurus:
             if wordB in self.vectordict.keys():
                 vectorB = self.vectordict[wordB]
                 sim = vectorA.findsim(vectorB,metric)
+                print "Similarity between "+vectorA.word+"/"+vectorA.pos+" and "+vectorB.word +"/"+vectorB.pos+" is "+str(sim)
+                print "("+str(vectorA.width) + ", "+str(vectorB.width)+")"
 
             else:
-                print wordB +" not in dictionary"
+                (word,pos)=wordB
+                print word+"/"+pos +" not in dictionary"
 
         else:
-            print wordA +" not in dictionary"
+            (word,pos)=wordA
+            print word+"/"+pos +" not in dictionary"
 
 
 
-        print "Similarity between "+vectorA.word+"/"+vectorA.pos+" and "+vectorB.word +"/"+vectorB.pos+" is "+str(sim)
-        print "("+str(vectorA.width) + ", "+str(vectorB.width)+")"
+
 
     def analyse(self):
         totaltop=0.0

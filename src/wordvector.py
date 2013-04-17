@@ -7,11 +7,11 @@ import scipy.sparse as sparse
 from scipy.stats import binom
 import math
 
-def update_dim(dim):
+def update_params(dim,a,b):
     WordVector.dim=dim
-    adj=dim/2.0
-    WordVector.adj_constant = adj/2
-#    WordVector.adj_constant=math.sqrt(adj)
+    WordVector.adj_constant=dim
+    WordVector.adja=a
+    WordVector.adjb=b
 #    WordVector.adj_constant=math.log(dim/2.0,2)
 
 
@@ -25,6 +25,8 @@ class WordVector:
     gamma=0
     dim = -1 #dimensionality will be set once all vectors read in
     adj_constant = -1
+    adja=1 #linadj parameter a
+    adjb=1 # linadj parameter b
 
     def __init__(self, wordpos):
 
@@ -265,13 +267,10 @@ class WordVector:
 
         adj1=mywidth*awidth*1.0/(mywidth+awidth)
 #        adj=math.log(adj1,2)
-#        adj= math.sqrt(adj1)
-        adj = adj1
-        if adj == 0:
-            #print mywidth, awidth, adj1, adj
-            adj = 0.5
+        adj= math.pow(WordVector.adj_constant/adj1,(1.0/WordVector.adja))
+#        adj = adj1
         sim = self.linsim(avector)
-        sim = sim * WordVector.adj_constant/adj
+        sim = 1-1/(math.pow(sim,WordVector.adjb) * adj+1)
         return sim
 
     def makecache(self,outstream):

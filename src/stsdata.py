@@ -10,7 +10,7 @@ import scipy.stats as stats
 import sys
 import scipy.sparse as sparse
 import operator
-from wordvector import update_dim
+from wordvector import update_params
 
 #import matplotlib.pyplot as plt
 
@@ -31,7 +31,7 @@ class STSData:
     seed = 666
 
 
-    def __init__(self,graphson,testing,windows,threshold,threshtype,verbose):
+    def __init__(self,graphson,testing,windows,threshold,threshtype,verbose,adja,adjb):
         self.pairset={} #label is setid_fileid
         self.vectordict={} #mapping from (word,POS) tuples to wordvectors
         self.wordcounts={} #count the number of times each (word,POS) tuple occurs in data for analysis
@@ -58,6 +58,8 @@ class STSData:
         STSData.simthreshold=threshold
         STSData.threshtype=threshtype
         self.verbose = verbose
+        self.adja=adja
+        self.adjb=adjb
 
     def setseed(self):
         random.seed(STSData.seed)#for reproducible results
@@ -490,7 +492,7 @@ class STSData:
         del self.fkeys
         del self.allfeatures
         self.dim=len(self.fk_idx)
-        update_dim(self.dim)
+        update_params(self.dim,self.adja,self.adjb)
         print "Dimensionality is "+ str(self.dim)
         self.makearrays()
 

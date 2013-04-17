@@ -6,7 +6,7 @@ from stsdata import STSData
 #set up configuration. Import configuration function
 import conf
 #pass commandline arguments
-(testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim,threshold,threshtype,toyrun,use_cache)=conf.configure(sys.argv)
+(testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim,threshold,threshtype,toyrun,use_cache,adja,adjb)=conf.configure(sys.argv)
 
 #uni filenames
 parent="/Volumes/LocalScratchHD/juliewe/Documents/workspace/STS/data/"
@@ -110,7 +110,7 @@ def do_correlation(mydata):
                 print "Starting next run"
 
 
-mydata = STSData(graphson,testing,windows,threshold,threshtype,verbose)
+mydata = STSData(graphson,testing,windows,threshold,threshtype,verbose,adja,adjb)
 print "Configuration set to windows = ", windows
 print "Composition type = ", comptype
 print "Similarity metric = ", metric

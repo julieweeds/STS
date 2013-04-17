@@ -1,6 +1,8 @@
 import re
 
 thresholdPATT = re.compile('threshold=(.*)')
+linadjaPATT = re.compile('linadja=(.*)')
+linadjbPATT = re.compile('linadjb=(.*)')
 
 def configure(arguments):
 
@@ -29,6 +31,10 @@ def configure(arguments):
     toyrun=False
 #use vector cache?
     use_cache=False
+#linadj parameters
+    adja=2
+    adjb=1
+
 
 
 #override with command line arguments
@@ -75,10 +81,20 @@ def configure(arguments):
             metric="cosine"
         elif argument == "binprob":
             metric="binprob"
+        elif argument == "linadj":
+            metric="linadj"
         else:
-            matchobj = thresholdPATT.match(argument)
+            matchobj = linadjaPATT.match(argument)
             if matchobj:
-                threshold = float(matchobj.group(1))
+                adja=int(matchobj.group(1))
+            else:
+                matchobj = linadjbPATT.match(argument)
+                if matchobj:
+                    adjb=int(matchobj.group(1))
+                else:
+                    matchobj = thresholdPATT.match(argument)
+                    if matchobj:
+                        threshold = float(matchobj.group(1))
 
-    return(testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim,threshold,threshtype,toyrun,use_cache)
+    return(testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim,threshold,threshtype,toyrun,use_cache,adja,adjb)
 

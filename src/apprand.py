@@ -3,7 +3,7 @@ __author__ = 'Julie'
 #generate random vectors of dimensionality 1 .. n to examine width correlation properties
 
 from wordvector import WordVector
-from wordvector import update_dim
+from wordvector import update_params
 import random
 import numpy
 import scipy.sparse as sparse
@@ -24,15 +24,17 @@ class AppRand:
         self.allfeatures=[]
         self.fk_idx={}
         dim=0
-        while dim<1*self.n:
+        while dim<2*self.n:
             label="feature_"+str(dim)
             self.allfeatures.append(label)
             dim+=1
 
-        self.llim=a
-        self.ulim=b
-        self.mu=a
-        self.sigma=b
+#        self.llim=a
+#        self.ulim=b
+        self.mu=0
+        self.sigma=2
+        self.adja=a
+        self.adjb=b
         self.metric = metric
         self.width=0
         self.widths=[]
@@ -48,7 +50,7 @@ class AppRand:
         self.dim=len(self.fk_idx)
         #print self.fk_idx
         print "Dimensionality is "+ str(self.dim)
-        update_dim(self.dim)
+        update_params(self.dim,self.adja,self.adjb)
         self.makearrays()
 
     def makearrays(self):
@@ -252,8 +254,10 @@ if __name__ == "__main__":
 
     if len(sys.argv)==4:
         metric = sys.argv[3]
-    print "Lower limit for feature value is: "+str(lower_limit)
-    print "Upper limit for feature value is: "+str(upper_limit)
+ #   print "Lower limit for feature value is: "+str(lower_limit)
+ #   print "Upper limit for feature value is: "+str(upper_limit)
+    print "linadj parameter a is "+str(lower_limit)
+    print "linadj parameter b is "+str(upper_limit)
     print "Similarity metric is: "+metric
     myapprand=AppRand(int(lower_limit),int(upper_limit),metric)
     myapprand.run()
