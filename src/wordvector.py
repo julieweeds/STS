@@ -49,7 +49,8 @@ class WordVector:
 
 
     def addfeature(self,feature,score):
-        if float(score) <=-5:
+        if float(score) <=0:
+            #print "Rejecting negative PMI score "+score
             return False
         else:
             if feature in self.vector:
