@@ -175,9 +175,17 @@ class Thesaurus:
                         same =True
                     else:
                         label = wordvectorB.word+"_"+wordvectorB.pos
-                        wordvectorA.allsims[label]=wordvectorA.findsim(wordvectorB,metric)
 
-                wordvectorA.outputsims(outstream)
+                        sim=wordvectorA.findsim(wordvectorB,metric)
+                        if sim<0:
+                            wordvectorA.debug=True
+                            wordvectorA.findsim(wordvectorB,metric)
+                        if sim>1:
+                            wordvectorA.debug=True
+                            wordvectorA.findsim(wordvectorB,metric)
+                        wordvectorA.allsims[label]=sim
+\
+                        wordvectorA.outputsims(outstream)
 
                 done+=1
                 if done%100==0: print "Completed similarity calculations for "+str(done)+" words"

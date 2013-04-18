@@ -629,6 +629,10 @@ class STSData:
                             if lemmaB in self.vectordict:
                                 if len(self.vectordict[lemmaB].vector)>0:
                                     thissim=self.vectordict[lemmaA].findsim(self.vectordict[lemmaB],self.metric)
+                                    if thissim<0:
+                                        print lemmaA,lemmaB,thissim
+                                        self.vectordict[lemmaA].debug=True
+                                        thissim=self.vectordict[lemmaA].findsim(self.vectordict[lemmaB],self.metric)
                                     if thissim>1:
                                         print lemmaA, lemmaB, thissim
                                         self.vectordict[lemmaA].debug=True
