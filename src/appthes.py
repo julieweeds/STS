@@ -23,8 +23,8 @@ if windows:
     cachename=datadirname+"/../win_vectors.cached"
     simcachefile=datadirname+"/../win_sims.cached"
 else:
-    cachename=datadirname+"/../dep_vectors.cached"
-    simcachefile=datadirname+"/../dep_sims.cached"
+    cachename=datadirname+"/../"+metric+"_dep_vectors.cached"
+    simcachefile=datadirname+"/../"+metric+"_dep_sims.cached"
 
 
 if use_cache:
@@ -36,6 +36,7 @@ words=[("man","N"),("woman","N"),("lady","N"),("gentleman","N"),("light","N")]
 simcache=False #whether file currently contains valid sims
 k=100
 
+print(sys.argv)
 mythes=Thesaurus(vectorfilename,simcachefile,simcache,windows,k,adja,adjb)
 mythes.readvectors()
 for wordA in words:

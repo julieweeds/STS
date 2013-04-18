@@ -251,7 +251,7 @@ class Thesaurus:
 
         pr=stats.spearmanr(x,y)
         mytitle="Regression line for width and top similarity"
-        self.showpoly(x,y,thispoly,mytitle,pr,1,1)
+#        self.showpoly(x,y,thispoly,mytitle,pr,1,1)
         print "SRCC for width and top similarity is "+str(pr[0])+" ("+str(pr[1])+")"
         print thispoly
 
@@ -262,7 +262,7 @@ class Thesaurus:
 
         pr=stats.spearmanr(x,y)
         mytitle="Regression line for width and average similarity"
-        self.showpoly(x,y,thispoly,mytitle,pr,1,1)
+#        self.showpoly(x,y,thispoly,mytitle,pr,1,1)
         print "SRCC for width and average similarity is "+str(pr[0])+" ("+str(pr[1])+")"
         print thispoly
 
