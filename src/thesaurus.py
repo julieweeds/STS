@@ -7,7 +7,7 @@ import re
 import sys
 import numpy
 import scipy.sparse as sparse
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import scipy.stats as stats
 
 class Thesaurus:
@@ -184,7 +184,6 @@ class Thesaurus:
                             wordvectorA.debug=True
                             wordvectorA.findsim(wordvectorB,metric)
                         wordvectorA.allsims[label]=sim
-\
                         wordvectorA.outputsims(outstream)
 
                 done+=1
@@ -259,7 +258,7 @@ class Thesaurus:
 
         pr=stats.spearmanr(x,y)
         mytitle="Regression line for width and top similarity"
-        self.showpoly(x,y,thispoly,mytitle,pr,1,1)
+      #  self.showpoly(x,y,thispoly,mytitle,pr,1,1)
         print "SRCC for width and top similarity is "+str(pr[0])+" ("+str(pr[1])+")"
         print thispoly
 
@@ -270,7 +269,7 @@ class Thesaurus:
 
         pr=stats.spearmanr(x,y)
         mytitle="Regression line for width and average similarity"
-        self.showpoly(x,y,thispoly,mytitle,pr,1,1)
+     #   self.showpoly(x,y,thispoly,mytitle,pr,1,1)
         print "SRCC for width and average similarity is "+str(pr[0])+" ("+str(pr[1])+")"
         print thispoly
 
