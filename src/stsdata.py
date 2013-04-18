@@ -621,6 +621,7 @@ class STSData:
                 if lemmaA in lemmalistB: #check if word is actually in the other sentence
                     maxsim=1.0
                     maxlemma=lemmaA
+                    #print lemmaA, lemmaB, thissim
                 else:
                     if len(self.vectordict[lemmaA].vector)>0: #only consider non-zero vectors
 
@@ -629,7 +630,7 @@ class STSData:
                                 if len(self.vectordict[lemmaB].vector)>0:
                                     thissim=self.vectordict[lemmaA].findsim(self.vectordict[lemmaB],self.metric)
                                     if thissim>1:
-                                        print lemmaA, lemmaA, thissim
+                                        print lemmaA, lemmaB, thissim
                                     if(thissim>maxsim):
                                         maxsim=thissim
                                         maxlemma=lemmaB
