@@ -21,9 +21,9 @@ datadirname=parent+"trial/STS2012-train/STSinput-tagged"
 
 if windows:
     cachename=datadirname+"/../win_vectors.cached"
-    simcachefile=datadirname+"/../win_sims.cached"
+    simcachefile=datadirname+"/../"+metric+"_win_sims.cached"
 else:
-    cachename=datadirname+"/../"+metric+"_dep_vectors.cached"
+    cachename=datadirname+"/../dep_vectors.cached"
     simcachefile=datadirname+"/../"+metric+"_dep_sims.cached"
 
 
