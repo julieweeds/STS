@@ -44,6 +44,7 @@ class WordVector:
         self.nosims=0
         self.totalsim=0
         self.square=0
+        self.debug=False
 
 
 
@@ -270,7 +271,12 @@ class WordVector:
         adj= math.pow(WordVector.adj_constant/adj1,(1.0/WordVector.adja))
 #        adj = adj1
         sim = self.linsim(avector)
+        if self.debug:
+            print mywidth,awidth, adj1, sim, WordVector.adj_constant, WordVector.adja, WordVector.adjb
         sim = 1-1/(math.pow(sim,WordVector.adjb) * adj+1)
+        if self.debug:
+            print sim
+        self.debug=False
         return sim
 
     def makecache(self,outstream):
