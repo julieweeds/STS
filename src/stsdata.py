@@ -631,6 +631,8 @@ class STSData:
                                     thissim=self.vectordict[lemmaA].findsim(self.vectordict[lemmaB],self.metric)
                                     if thissim>1:
                                         print lemmaA, lemmaB, thissim
+                                        self.vectordict[lemmaA].debug=True
+                                        thissim=self.vectordict[lemmaA].findsim(self.vectordict[lemmaB],self.metric)
                                     if(thissim>maxsim):
                                         maxsim=thissim
                                         maxlemma=lemmaB
