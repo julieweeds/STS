@@ -232,7 +232,8 @@ class Thesaurus:
     def topsim(self,sim):
         #retain similarities over sim threshold
         for thisvector in self.vectordict.values():
-            thisvector.topsim(sim)
+            #print thisvector,sim
+            thisvector.keeptopsim(sim)
 
     def analyse(self):
         totaltop=0.0

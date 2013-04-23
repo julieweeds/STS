@@ -337,7 +337,7 @@ class WordVector:
             self.allsims[word]=float(sim)
             done+=1
 
-    def topsim(self,sim):
+    def keeptopsim(self,sim):
         #only retain neighbours above sim threshold
         tuplelist=[]
         for item in self.allsims.keys():
