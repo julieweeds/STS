@@ -45,6 +45,7 @@ class WordVector:
         self.totalsim=0
         self.square=0
         self.debug=False
+        self.tuplelist=[]
 
 
 
@@ -325,15 +326,16 @@ class WordVector:
 
     def topk(self,k):
         #only retain top k neighbours
+        if len(self.tuplelist)>0:
 
-        tuplelist=[]
-        for item in self.allsims.keys():
-            tuplelist.append((float(self.allsims[item]),item))
-        tuplelist.sort()
+        else:
+            for item in self.allsims.keys():
+                self.tuplelist.append((float(self.allsims[item]),item))
+            self.tuplelist.sort()
         self.allsims={}
         done=0
         while done < k:
-            (sim,word)=tuplelist.pop()
+            (sim,word)=self.tuplelist.pop()
             self.allsims[word]=float(sim)
             done+=1
 
@@ -351,4 +353,14 @@ class WordVector:
             self.allsims[word]=float(sim)
             outstream.write("\t"+word+"\t"+str(sim))
             done+=1
-        print("\n")
+        outstream.write("\n")
+
+    def evaluaterecall(self,gs):
+        num=0
+        den=0
+        for word in gs:
+            den+=1
+            if word in self.allsims.keys():
+                num+=1
+
+        return num*1.0/den

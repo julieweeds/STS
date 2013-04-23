@@ -213,7 +213,10 @@ class Thesaurus:
             print word+"/"+pos +" not in dictionary"
 
 
-
+    def topk(self,k):
+        #retain top k neighbours for each word
+        for thisvector in self.vectordict.values():
+            thisvector.topk(k)
 
 
     def analyse(self):
