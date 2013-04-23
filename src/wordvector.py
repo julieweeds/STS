@@ -21,6 +21,7 @@ class WordVector:
     windows=False
     windowPATT=re.compile('T:.*')
     filteredPATT=re.compile('___FILTERED___')
+    posPATT=re.compile('(.*)[_|/].*')
     beta=0
     gamma=0
     dim = -1 #dimensionality will be set once all vectors read in
@@ -45,7 +46,6 @@ class WordVector:
         self.totalsim=0
         self.square=0
         self.debug=False
-        self.tuplelist=[]
 
 
 
@@ -326,22 +326,6 @@ class WordVector:
 
     def topk(self,k):
         #only retain top k neighbours
-        if len(self.tuplelist)>0:
-            check=True
-        else:
-            for item in self.allsims.keys():
-                self.tuplelist.append((float(self.allsims[item]),item))
-            self.tuplelist.sort()
-        self.allsims={}
-        done=0
-        while done < k:
-            (sim,word)=self.tuplelist.pop()
-            self.allsims[word]=float(sim)
-            done+=1
-
-    def outputtopk(self,outstream,k):
-
-        outstream.write(self.word+"/"+self.pos+"\t"+str(self.width)+"\t"+str(self.length))
         tuplelist=[]
         for item in self.allsims.keys():
             tuplelist.append((float(self.allsims[item]),item))
@@ -351,16 +335,76 @@ class WordVector:
         while done < k:
             (sim,word)=tuplelist.pop()
             self.allsims[word]=float(sim)
-            outstream.write("\t"+word+"\t"+str(sim))
             done+=1
-        outstream.write("\n")
+
+    def topsim(self,sim):
+        #only retain neighbours above sim threshold
+        tuplelist=[]
+        for item in self.allsims.keys():
+            tuplelist.append((float(self.allsims[item]),item))
+        tuplelist.sort()
+        self.allsims={}
+        (thissim,word)=tuplelist.pop()
+        while thissim > sim:
+
+            self.allsims[word]=float(thissim)
+            (thissim,word)=tuplelist.pop()
+
+
+    def outputtopk(self,outstream,k):
+
+        self.topk(k)
+        self.outputsims(outstream)
+
+#        outstream.write(self.word+"/"+self.pos+"\t"+str(self.width)+"\t"+str(self.length))
+#        tuplelist=[]
+#        for item in self.allsims.keys():
+#            tuplelist.append((float(self.allsims[item]),item))
+#        tuplelist.sort()
+#        self.allsims={}
+#        done=0
+#        while done < k:
+#            (sim,word)=tuplelist.pop()
+#            self.allsims[word]=float(sim)
+#            outstream.write("\t"+word+"\t"+str(sim))
+#            done+=1
+#        outstream.write("\n")
 
     def evaluaterecall(self,gs):
         num=0
         den=0
         for word in gs:
             den+=1
-            if word in self.allsims.keys():
-                num+=1
+        #    print word, self.allsims.keys()
+            for key in self.allsims.keys():
+                if self.match(word,key):
+                    num+=1
 
         return num*1.0/den
+
+    def evaluateprecision(self,gs):
+        num=0
+        den=0
+        for key in self.allsims.keys():
+            den+=1
+            for word in gs:
+                if self.match(word,key):
+                    num+=1
+        return num*1.0/den
+
+    def match(self,word,key):
+
+        thisword=self.extractword(word)
+        thiskey=self.extractword(key)
+        return thisword==thiskey
+
+    def extractword(self,word):
+
+        #print word
+        matchobj = WordVector.posPATT.match(word)
+        if matchobj:
+            res = matchobj.group(1)
+        else:
+            print "Argh"
+        #print res
+        return res

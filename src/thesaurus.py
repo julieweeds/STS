@@ -29,6 +29,8 @@ class Thesaurus:
         self.k=k
         self.adja=adja
         self.adjb=adjb
+        self.filter=False
+        self.filterwords=[]
 
     def readvectors(self):
         if self.simcache:
@@ -91,7 +93,7 @@ class Thesaurus:
             if (linesread%100 == 0):
                 print "Read "+str(linesread)+" lines and updated "+str(self.updated)+" similarity vectors"
                 sys.stdout.flush()
-                #exit(1)
+                #return
 
         print "Read "+str(linesread)+" lines and updated "+str(self.updated)+" vectors"
         instream.close()
@@ -108,17 +110,26 @@ class Thesaurus:
 
 
         #self.vectordict[wordpos]=WordVector(wordpos) #initialise WordVector in vector dictionary
-        self.thisvector=WordVector(wordpos)
+        (word,pos)=wordpos
+        add=True
+        if self.filter:
+            if word+"/"+pos in self.filterwords:
+                add=True
+            else:
+                add=False
 
-        featurelist.reverse() #reverse list so can pop features and scores off
-        featurelist.pop() #take off last item which is word itself
-        self.thisvector.width=featurelist.pop()
-        self.thisvector.length=featurelist.pop()
-        self.updatesimvector(wordpos,featurelist)
-        self.thisvector.topk(self.k)
-        self.vectordict[wordpos]=self.thisvector
-        #self.vectordict[wordpos].displaysims()
-        self.updated+=1
+        if add:
+            self.thisvector=WordVector(wordpos)
+
+            featurelist.reverse() #reverse list so can pop features and scores off
+            featurelist.pop() #take off last item which is word itself
+            self.thisvector.width=featurelist.pop()
+            self.thisvector.length=featurelist.pop()
+            self.updatesimvector(wordpos,featurelist)
+            self.thisvector.topk(self.k)
+            self.vectordict[wordpos]=self.thisvector
+            #self.vectordict[wordpos].displaysims()
+            self.updated+=1
 
     def updatesimvector(self,wordpos,featurelist):
         while(len(featurelist)>0):
@@ -159,10 +170,10 @@ class Thesaurus:
         if self.simcache:
             #read in from sim cache
             self.readsims()
-            outstream=open(self.simcachefile,'w')
-            for wordvectorA in self.vectordict.values():
-                wordvectorA.outputsims(outstream)
-            outstream.close()
+            #outstream=open(self.simcachefile,'w')
+            #for wordvectorA in self.vectordict.values():
+            #    wordvectorA.outputsims(outstream)
+            #outstream.close()
         else:
             outstream=open(self.simcachefile,'w')
             #compute all pairs sims and write sim cache
@@ -174,7 +185,7 @@ class Thesaurus:
                         #ignore
                         same =True
                     else:
-                        label = wordvectorB.word+"_"+wordvectorB.pos
+                        label = wordvectorB.word+"/"+wordvectorB.pos
 
                         sim=wordvectorA.findsim(wordvectorB,metric)
                         if sim<0:
@@ -218,6 +229,10 @@ class Thesaurus:
         for thisvector in self.vectordict.values():
             thisvector.topk(k)
 
+    def topsim(self,sim):
+        #retain similarities over sim threshold
+        for thisvector in self.vectordict.values():
+            thisvector.topsim(sim)
 
     def analyse(self):
         totaltop=0.0
