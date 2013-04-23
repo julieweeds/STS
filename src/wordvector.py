@@ -327,7 +327,7 @@ class WordVector:
     def topk(self,k):
         #only retain top k neighbours
         if len(self.tuplelist)>0:
-
+            check=True
         else:
             for item in self.allsims.keys():
                 self.tuplelist.append((float(self.allsims[item]),item))
