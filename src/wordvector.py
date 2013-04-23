@@ -336,3 +336,19 @@ class WordVector:
             (sim,word)=tuplelist.pop()
             self.allsims[word]=float(sim)
             done+=1
+
+    def outputtopk(selfself,outstream,k):
+
+        outstream.write(self.word+"/"+self.pos+"\t"+str(self.width)+"\t"+str(self.length))
+        tuplelist=[]
+        for item in self.allsims.keys():
+            tuplelist.append((float(self.allsims[item]),item))
+        tuplelist.sort()
+        self.allsims={}
+        done=0
+        while done < k:
+            (sim,word)=tuplelist.pop()
+            self.allsims[word]=float(sim)
+            outstream.write("\t"+word+"\t"+sim)
+            done+=1
+        print("\n")

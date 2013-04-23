@@ -184,7 +184,7 @@ class Thesaurus:
                             wordvectorA.debug=True
                             wordvectorA.findsim(wordvectorB,metric)
                         wordvectorA.allsims[label]=sim
-                        wordvectorA.outputsims(outstream)
+                wordvectorA.outputtopk(outstream,self.k)
 
                 done+=1
                 if done%100==0: print "Completed similarity calculations for "+str(done)+" words"

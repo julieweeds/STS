@@ -31,10 +31,10 @@ if use_cache:
     vectorfilename=cachename
 
 
-words=[("man","N"),("woman","N"),("lady","N"),("gentleman","N"),("light","N")]
+words=[("man","N"),("woman","N"),("lady","N"),("gentleman","N"),("person","N"),("light","N")]
 
 simcache=False #whether file currently contains valid sims
-k=100
+k=1000
 
 print(sys.argv)
 mythes=Thesaurus(vectorfilename,simcachefile,simcache,windows,k,adja,adjb)
