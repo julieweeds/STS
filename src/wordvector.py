@@ -349,6 +349,6 @@ class WordVector:
         while done < k:
             (sim,word)=tuplelist.pop()
             self.allsims[word]=float(sim)
-            outstream.write("\t"+word+"\t"+sim)
+            outstream.write("\t"+word+"\t"+str(sim))
             done+=1
         print("\n")
