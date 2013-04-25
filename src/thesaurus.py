@@ -244,6 +244,8 @@ class Thesaurus:
         correlationx=[]
         correlationy1=[]
         correlationy2=[]
+        totalsd = 0.0
+        squaresd=0.0
 
         for wordvectorA in self.vectordict.values():
             count+=1
@@ -251,6 +253,8 @@ class Thesaurus:
             squaretop+=wordvectorA.topsim*wordvectorA.topsim
             totalavg+=wordvectorA.avgsim
             squareavg+=wordvectorA.avgsim*wordvectorA.avgsim
+            totalsd+=wordvectorA.sd
+            squaresd+=wordvectorA.sd * wordvectorA.sd
             correlationx.append(float(wordvectorA.width))
             correlationy1.append(float(wordvectorA.topsim))
             correlationy2.append(float(wordvectorA.avgsim))
@@ -259,9 +263,12 @@ class Thesaurus:
         sdtop=pow(squaretop/count - avgtop*avgtop,0.5)
         avgavg=totalavg/count
         sdavg=pow(squareavg/count-avgavg*avgavg,0.5)
+        avgsd=totalsd/count
+        sdsd=pow(squaresd/count-avgsd*avgsd,0.5)
 
         print "Top similarity: average = "+str(avgtop)+" sd = "+str(sdtop)
         print "average similarity: average = "+str(avgavg)+" sd = "+str(sdavg)
+        print "SD similarity: average = "+str(avgsd)+" sd = "+str(sdsd)
 
 
         #print correlationx

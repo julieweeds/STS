@@ -34,6 +34,8 @@ def configure(arguments):
 #linadj parameters
     adja=2
     adjb=1
+#valid sims in simcache file for thesaurus
+    simcache=False
 
 
 
@@ -71,6 +73,8 @@ def configure(arguments):
             toyrun = True
         elif argument == "use_cache":
             use_cache=True
+        elif argument == "simcache":
+            simcache=True
         elif argument == "filtered":
             filtered=True
         elif argument == "unfiltered":
@@ -96,5 +100,5 @@ def configure(arguments):
                     if matchobj:
                         threshold = float(matchobj.group(1))
 
-    return(testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim,threshold,threshtype,toyrun,use_cache,adja,adjb)
+    return(testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim,threshold,threshtype,toyrun,use_cache,adja,adjb,simcache)
 

@@ -4,7 +4,7 @@ import sys
 import conf
 from thesaurus import Thesaurus
 #pass commandline arguments
-(testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim,threshold,threshtype,toyrun,use_cache,adja,adjb)=conf.configure(sys.argv)
+(testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim,threshold,threshtype,toyrun,use_cache,adja,adjb,simcache)=conf.configure(sys.argv)
 
 #uni filenames
 parent="/Volumes/LocalScratchHD/juliewe/Documents/workspace/STS/data/"
@@ -33,15 +33,18 @@ if use_cache:
 
 words=[("man","N"),("woman","N"),("lady","N"),("gentleman","N"),("person","N"),("light","N")]
 
-simcache=False #whether file currently contains valid sims
-k=1000
+#simcache=False #whether file currently contains valid sims
+k=100
 
 print(sys.argv)
 mythes=Thesaurus(vectorfilename,simcachefile,simcache,windows,k,adja,adjb)
 mythes.readvectors()
-for wordA in words:
-    for wordB in words:
-        mythes.outputsim(wordA,wordB,metric)
+if simcache:
+    check=True
+else:
+    for wordA in words:
+        for wordB in words:
+            mythes.outputsim(wordA,wordB,metric)
 mythes.allpairssims(metric)
 
 mythes.analyse()

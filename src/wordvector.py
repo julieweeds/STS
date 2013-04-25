@@ -311,6 +311,7 @@ class WordVector:
         self.totalsim=total
         self.squaretotal=squares
         self.nosims=count
+        self.sd = pow(squares*1.0/count - self.avgsim*self.avgsim,0.5)
 
     def outputsims(self,outstream):
         outstream.write(self.word+"/"+self.pos+"\t"+str(self.width)+"\t"+str(self.length))
@@ -344,11 +345,17 @@ class WordVector:
             tuplelist.append((float(self.allsims[item]),item))
         tuplelist.sort()
         self.allsims={}
-        (thissim,word)=tuplelist.pop()
+        if len(tuplelist)>0:
+          (thissim,word)=tuplelist.pop()
+        else:
+            thissim=-1
         while thissim > sim:
 
             self.allsims[word]=float(thissim)
-            (thissim,word)=tuplelist.pop()
+            if len(tuplelist)==0:
+                thissim=-1
+            else:
+                (thissim,word)=tuplelist.pop()
 
 
     def outputtopk(self,outstream,k):
@@ -379,8 +386,10 @@ class WordVector:
             for key in self.allsims.keys():
                 if self.match(word,key):
                     num+=1
-
-        return num*1.0/den
+        if den>0:
+            return num*1.0/den
+        else:
+            return 1.0
 
     def evaluateprecision(self,gs):
         num=0
@@ -390,7 +399,13 @@ class WordVector:
             for word in gs:
                 if self.match(word,key):
                     num+=1
-        return num*1.0/den
+        if den>0:
+            return num*1.0/den
+        else:
+            return 1.0
+
+    def getk(self):
+        return len(self.allsims.keys())
 
     def match(self,word,key):
 
