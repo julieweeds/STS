@@ -13,6 +13,7 @@ import scipy.stats as stats
 class Thesaurus:
 
     wordposPATT = re.compile('(.*)/(.)') #only first char of POS
+    byblo = False # byblo neighbours file or appthes generated from vector file
 
     def __init__(self,vectorfilename,simcachefile,simcache,windows,k,adja,adjb):
         self.vectorfilename=vectorfilename
@@ -123,8 +124,12 @@ class Thesaurus:
 
             featurelist.reverse() #reverse list so can pop features and scores off
             featurelist.pop() #take off last item which is word itself
-            self.thisvector.width=featurelist.pop()
-            self.thisvector.length=featurelist.pop()
+            if Thesaurus.byblo:
+                #no extra fields
+                check=True
+            else:
+                self.thisvector.width=float(featurelist.pop())
+                self.thisvector.length=float(featurelist.pop())
             self.updatesimvector(wordpos,featurelist)
             self.thisvector.topk(self.k)
             self.vectordict[wordpos]=self.thisvector
@@ -135,7 +140,7 @@ class Thesaurus:
         while(len(featurelist)>0):
             f=featurelist.pop()
             sc=featurelist.pop()
-            self.thisvector.allsims[f]=sc
+            self.thisvector.allsims[f]=float(sc)
 
 
     def makematrix(self):
@@ -234,6 +239,16 @@ class Thesaurus:
         for thisvector in self.vectordict.values():
             #print thisvector,sim
             thisvector.keeptopsim(sim)
+
+    def displayneighs(self,word,k):
+        if word in self.vectordict.keys():
+
+            vector=self.vectordict[word]
+            vector.topk(k)
+            vector.displaysims()
+        else:
+            (word,pos)=word
+            print word+"/"+pos + " not in dictionary"
 
     def analyse(self):
         totaltop=0.0

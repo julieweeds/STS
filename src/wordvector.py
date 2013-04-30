@@ -46,6 +46,7 @@ class WordVector:
         self.totalsim=0
         self.square=0
         self.debug=False
+        self.tuplelist=[]
 
 
 
@@ -199,8 +200,10 @@ class WordVector:
             den = den+self.vector[feature]
         for feature in avector.vector.keys():
             den = den+avector.vector[feature]
+        print "Intersect is ...."
         for feature in intersect:
             num = num + self.vector[feature]+avector.vector[feature]
+            print feature, self.vector[feature],avector.vector[feature]
         sim = (num*1.0)/(den*1.0)
         return sim
 
@@ -315,27 +318,40 @@ class WordVector:
 
     def outputsims(self,outstream):
         outstream.write(self.word+"/"+self.pos+"\t"+str(self.width)+"\t"+str(self.length))
-        for word in self.allsims.keys():
-            outstream.write("\t"+word+"\t"+str(self.allsims[word]))
+        #for word in self.allsims.keys():
+        #    outstream.write("\t"+word+"\t"+str(self.allsims[word]))
+        for(sim,word) in self.tuplelist:
+            outstream.write("\t"+word+"\t"+str(sim))
         outstream.write("\n")
 
     def displaysims(self):
         print(self.word+"/"+self.pos+"\t"+str(self.width)+"\t"+str(self.length))
-        for word in self.allsims.keys():
-            print("\t"+word+"\t"+str(self.allsims[word]))
+        #for word in self.allsims.keys():
+        #    print("\t"+word+"\t"+str(self.allsims[word]))
+        for (sim,word) in self.tuplelist:
+            print("\t"+word+"\t"+str(sim))
         print("\n")
 
     def topk(self,k):
         #only retain top k neighbours
-        tuplelist=[]
-        for item in self.allsims.keys():
-            tuplelist.append((float(self.allsims[item]),item))
-        tuplelist.sort()
+        if len(self.tuplelist)==0:
+            self.tuplelist=[]
+            for item in self.allsims.keys():
+                self.tuplelist.append((float(self.allsims[item]),item))
+            self.tuplelist.sort()
+        else:
+            self.tuplelist.reverse()
         self.allsims={}
+        tuplelist=self.tuplelist
+        self.tuplelist=[]
         done=0
         while done < k:
-            (sim,word)=tuplelist.pop()
-            self.allsims[word]=float(sim)
+            if len(tuplelist)>0:
+                (sim,word)=tuplelist.pop()
+                self.allsims[word]=float(sim)
+                self.tuplelist.append((sim,word))
+            else:
+                done = k
             done+=1
 
     def keeptopsim(self,sim):
@@ -403,6 +419,27 @@ class WordVector:
             return num*1.0/den
         else:
             return 1.0
+
+    def evaluaterecall2(self,gs):
+        num=0
+        den=0
+        for word in gs:
+            den+=1
+            #    print word, self.allsims.keys()
+            for key in self.allsims.keys():
+                if self.match(word,key):
+                    num+=1
+        return (num,den)
+
+    def evaluateprecision2(self,gs):
+        num=0
+        den=0
+        for key in self.allsims.keys():
+            den+=1
+            for word in gs:
+                if self.match(word,key):
+                    num+=1
+        return (num,den)
 
     def getk(self):
         return len(self.allsims.keys())

@@ -36,6 +36,8 @@ def configure(arguments):
     adjb=1
 #valid sims in simcache file for thesaurus
     simcache=False
+#byblo sims
+    byblo = False
 
 
 
@@ -87,6 +89,10 @@ def configure(arguments):
             metric="binprob"
         elif argument == "linadj":
             metric="linadj"
+        elif argument == "byblo":
+            simcache=True
+            byblo=True
+            use_cache=True
         else:
             matchobj = linadjaPATT.match(argument)
             if matchobj:
@@ -100,5 +106,5 @@ def configure(arguments):
                     if matchobj:
                         threshold = float(matchobj.group(1))
 
-    return(testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim,threshold,threshtype,toyrun,use_cache,adja,adjb,simcache)
+    return(testing,at_home,on_apollo,windows,filtered,comptype,metric,setsim,threshold,threshtype,toyrun,use_cache,adja,adjb,simcache,byblo)
 
