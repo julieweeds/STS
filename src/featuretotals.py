@@ -128,7 +128,7 @@ class Totals:
         return mi
 
     def update(self,row,column,freq):
-        mioutput=""
+        mioutput=0
         matchobj=Totals.domainPATT.match(column)
         if matchobj: #domain/window feature
             if self.filereads>0:    #calc mis on second read of file
@@ -161,6 +161,8 @@ class Totals:
                     current=0
                 self.dependencyrow[row]=current+freq
                 self.dependencytotal+=freq
+        if mioutput < 0:
+            mioutput = 0
         return mioutput
 
     def output(self):
