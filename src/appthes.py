@@ -45,11 +45,11 @@ words=[("man","N"),("woman","N"),("lady","N"),("gentleman","N"),("person","N"),(
 testpair=(("lady","N"),("stir","V"))
 
 #simcache=False #whether file currently contains valid sims
-k=100
+k=1000
 kdisplay=10
 
 print(sys.argv)
-Thesaurus.byblo = byblo
+Thesaurus.byblo = byblo #take command line argument as to whether this is a byblo file or not
 mythes=Thesaurus(vectorfilename,simcachefile,simcache,windows,k,adja,adjb)
 mythes.readvectors()
 #if simcache:
