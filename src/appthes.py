@@ -44,7 +44,7 @@ if use_cache:
 
 
 words=[("man","N"),("woman","N"),("lady","N"),("gentleman","N"),("person","N"),("light","N")]
-testpair=(("lady","N"),("stir","V"))
+testpair=(("lady","N"),("idea","N"))
 
 #simcache=False #whether file currently contains valid sims
 k=1000
@@ -52,7 +52,11 @@ kdisplay=10
 
 print(sys.argv)
 Thesaurus.byblo = byblo #take command line argument as to whether this is a byblo file or not
-mythes=Thesaurus(vectorfilename,simcachefile,simcache,windows,k,adja,adjb)
+if metric == "cosine":
+    compress=True
+else:
+    compress=False
+mythes=Thesaurus(vectorfilename,simcachefile,simcache,windows,k,adja,adjb,compress)
 mythes.readvectors()
 #if simcache:
 #    check=True
@@ -61,8 +65,8 @@ mythes.readvectors()
 #        for wordB in words:
 #            mythes.outputsim(wordA,wordB,metric)
 
-#(word1,word2)=testpair
-#mythes.outputsim(word1,word2,metric)
+(word1,word2)=testpair
+mythes.outputsim(word1,word2,metric)
 
 mythes.allpairssims(metric)
 

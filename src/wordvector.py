@@ -200,10 +200,10 @@ class WordVector:
             den = den+self.vector[feature]
         for feature in avector.vector.keys():
             den = den+avector.vector[feature]
-        print "Intersect is ...."
+        #print "Intersect is ...."
         for feature in intersect:
             num = num + self.vector[feature]+avector.vector[feature]
-            print feature, self.vector[feature],avector.vector[feature]
+        #    print feature, self.vector[feature],avector.vector[feature]
         sim = (num*1.0)/(den*1.0)
         return sim
 

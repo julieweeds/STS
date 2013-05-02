@@ -15,7 +15,7 @@ class Thesaurus:
     wordposPATT = re.compile('(.*)/(.)') #only first char of POS
     byblo = False # byblo neighbours file or appthes generated from vector file
 
-    def __init__(self,vectorfilename,simcachefile,simcache,windows,k,adja,adjb):
+    def __init__(self,vectorfilename,simcachefile,simcache,windows,k,adja,adjb,compress):
         self.vectorfilename=vectorfilename
         self.simcachefile=simcachefile
         self.simcache=simcache
@@ -32,6 +32,7 @@ class Thesaurus:
         self.adjb=adjb
         self.filter=False
         self.filterwords=[]
+        self.compress=compress #whether to generate sparse vector representation for efficient sim calcs
 
     def readvectors(self):
         if self.simcache:
@@ -50,9 +51,10 @@ class Thesaurus:
 
             print "Read "+str(linesread)+" lines and updated "+str(self.updated)+" vectors"
             instream.close()
-            print "Compressing vector dictionary representation"
-            self.makematrix()
-            print "Finished sparse array generation"
+            if self.compress:
+                print "Compressing vector dictionary representation"
+                self.makematrix()
+                print "Finished sparse array generation"
 
     def processvectorline(self,line):
         featurelist=line.split('\t')
