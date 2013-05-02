@@ -43,8 +43,9 @@ if use_cache:
     vectorfilename=cachename
 
 
-words=[("man","N"),("woman","N"),("lady","N"),("gentleman","N"),("person","N"),("light","N")]
-testpair=(("lady","N"),("idea","N"))
+words=[("man","N"),("woman","N"),("lady","N"),("gentleman","N"),("person","N"),("light","N"),("kiwis","N"),("jacoby","N")]
+testpair=(("kiwis","N"),("zealanders","N"))
+
 
 #simcache=False #whether file currently contains valid sims
 k=1000
@@ -65,10 +66,15 @@ mythes.readvectors()
 #        for wordB in words:
 #            mythes.outputsim(wordA,wordB,metric)
 
+
 (word1,word2)=testpair
-mythes.outputsim(word1,word2,metric)
+if simcache==False:
+    mythes.outputsim(word1,word2,metric)
 
 mythes.allpairssims(metric)
+
+if simcache:
+    mythes.outputsim(word1,word2,metric)
 
 for word in words:
     mythes.displayneighs(word,kdisplay)

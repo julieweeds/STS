@@ -93,11 +93,11 @@ class Thesaurus:
         for line in instream:
             self.processsimline(line.rstrip())
             linesread+=1
-            if (linesread%100 == 0):
+            if (linesread%1000 == 0):
                 print "Read "+str(linesread)+" lines and updated "+str(self.updated)+" similarity vectors"
                 sys.stdout.flush()
                 #return
-
+        self.topk(self.k)
         print "Read "+str(linesread)+" lines and updated "+str(self.updated)+" vectors"
         instream.close()
 
@@ -213,22 +213,37 @@ class Thesaurus:
 
     def outputsim(self,wordA,wordB,metric):
         sim =-1
-        if wordA in self.vectordict.keys():
-            vectorA = self.vectordict[wordA]
+        if self.simcache:
+           (wa,pa)=wordA
+           if wordA in self.vectordict.keys():
+               (wb,pb)=wordB
+               label=wb+"/"+pb
+               if label in self.vectordict[wordA].allsims.keys():
+                   sim = self.vectordict[wordA].allsims[label]
+                   print "Similarity between "+wa+"/"+pa+" and "+wb +"/"+pb+" is "+str(sim)
+               else:
+                   print label + " not in neighbour set"
+           else:
+               print wa+"/"+pa+" not in dictionary"
 
-            if wordB in self.vectordict.keys():
-                vectorB = self.vectordict[wordB]
-                sim = vectorA.findsim(vectorB,metric)
-                print "Similarity between "+vectorA.word+"/"+vectorA.pos+" and "+vectorB.word +"/"+vectorB.pos+" is "+str(sim)
-                print "("+str(vectorA.width) + ", "+str(vectorB.width)+")"
-
-            else:
-                (word,pos)=wordB
-                print word+"/"+pos +" not in dictionary"
 
         else:
-            (word,pos)=wordA
-            print word+"/"+pos +" not in dictionary"
+            if wordA in self.vectordict.keys():
+                vectorA = self.vectordict[wordA]
+
+                if wordB in self.vectordict.keys():
+                    vectorB = self.vectordict[wordB]
+                    sim = vectorA.findsim(vectorB,metric)
+                    print "Similarity between "+vectorA.word+"/"+vectorA.pos+" and "+vectorB.word +"/"+vectorB.pos+" is "+str(sim)
+                    print "("+str(vectorA.width) + ", "+str(vectorB.width)+")"
+
+                else:
+                    (word,pos)=wordB
+                    print word+"/"+pos +" not in dictionary"
+
+            else:
+                (word,pos)=wordA
+                print word+"/"+pos +" not in dictionary"
 
 
     def topk(self,k):
