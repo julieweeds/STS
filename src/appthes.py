@@ -29,7 +29,7 @@ if windows:
     if byblo:
         simcachefile=datadirname+"nouns_win.byblo"
     else:
-        simcachefile=datadirname+"nouns_win_sims.cached"
+        simcachefile=datadirname+metric+"_nouns_win_sims.cached"
 else:
 #    cachename=datadirname+"/../dep_vectors.test"
 #    simcachefile=datadirname+"/../"+metric+"test_dep_sims.cached"
@@ -37,7 +37,7 @@ else:
     if byblo:
         simcachefile=datadirname+"nouns-deps.byblo"
     else:
-        simcachefile=datadirname+"nouns-win-deps.cached"
+        simcachefile=datadirname+metric+"_nouns_deps_sims.cached"
 
 if use_cache:
     vectorfilename=cachename
