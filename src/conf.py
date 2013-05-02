@@ -30,7 +30,7 @@ def configure(arguments):
 #data
     toyrun=False
 #use vector cache?
-    use_cache=False
+    use_cache=True
 #linadj parameters
     adja=2
     adjb=1

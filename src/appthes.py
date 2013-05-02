@@ -9,21 +9,23 @@ from thesaurus import Thesaurus
 #uni filenames
 #parent="/Volumes/LocalScratchHD/juliewe/Documents/workspace/STS/data/"
 parent="/Volumes/LocalScratchHD/juliewe/Documents/workspace/ThesEval/"
+#datadirname=parent+"trial/STS2012-train/STSinput-tagged"
+datadirname=parent+"data/giga_t10/"
 
 if at_home:
     parent="C:/Users/Julie/Documents/GitHub/STS/data/"
 
 if on_apollo:
-    parent="/mnt/lustre/scratch/inf/juliewe/STS/data/"
+#    parent="/mnt/lustre/scratch/inf/juliewe/STS/data/"
+    parent ="/mnt/lustre/scratch/inf/juliewe/ThesEval/"
+    datadirname ="../FeatureExtractionToolkit/Byblo-2.1.0/giga_t10_nouns_deps/"
 
-#datadirname=parent+"trial/STS2012-train/STSinput-tagged"
-datadirname=parent+"data/giga_t10/"
 
 
 if windows:
 #    cachename=datadirname+"/../win_vectors.cached"
 #    simcachefile=datadirname+"/../"+metric+"test_win_sims.cached"
-    cachename=datadirname+"nouns_win.mi"
+    cachename=datadirname+"nouns-win.mi"
     if byblo:
         simcachefile=datadirname+"nouns_win.byblo"
     else:
