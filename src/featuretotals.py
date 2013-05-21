@@ -167,7 +167,7 @@ class Totals:
                     current = 0
                     width =0
                 self.dependencycolumn[column]=current+freq
-                self.dependencycolumnnwidth[column]=width+1
+                self.dependencycolumnwidth[column]=width+1
                 if row in self.dependencyrow:
                     current = int(self.dependencyrow[row])
                     width = int(self.dependencyrowwidth[row])
