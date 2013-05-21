@@ -188,7 +188,7 @@ class Totals:
         outputf.write("##Dependency column totals for "+self.filename+"\n")
         outputf.write("#Grandtotal:\t"+str(self.dependencytotal)+"\n")
         for key,value in self.dependencycolumn.iteritems():
-            outputf.write(key+"\t"+str(value)+"\t"+self.dependencycolumnwidth[key]+"\n")
+            outputf.write(key+"\t"+str(value)+"\t"+str(self.dependencycolumnwidth[key])+"\n")
         outputf.close()
 
         outname = self.filename+"_domcol"
@@ -196,7 +196,7 @@ class Totals:
         outputf.write("##Domain column totals for "+self.filename+"\n")
         outputf.write("#Grandtotal:\t"+str(self.domaintotal)+"\n")
         for key,value in self.domaincolumn.iteritems():
-            outputf.write(key+"\t"+str(value)+"\t"+self.domaincolumnwidth[key]+"\n")
+            outputf.write(key+"\t"+str(value)+"\t"+str(self.domaincolumnwidth[key])+"\n")
         outputf.close()
 
         outname = self.filename+"_deprow"
@@ -204,7 +204,7 @@ class Totals:
         outputf.write("##Dependency row totals for "+self.filename+"\n")
         outputf.write("#Grandtotal:\t"+str(self.dependencytotal)+"\n")
         for key,value in self.dependencyrow.iteritems():
-            outputf.write(key+"\t"+str(value)+self.dependencyrowwidth[key]+"\n")
+            outputf.write(key+"\t"+str(value)+str(self.dependencyrowwidth[key])+"\n")
         outputf.close()
 
         outname = self.filename+"_domrow"
@@ -212,5 +212,5 @@ class Totals:
         outputf.write("##Domain row totals for "+self.filename+"\n")
         outputf.write("#Grandtotal:\t"+str(self.domaintotal)+"\n")
         for key,value in self.domainrow.iteritems():
-            outputf.write(key+"\t"+str(value)+"\t"+self.domainrowwidth[key]+"\n")
+            outputf.write(key+"\t"+str(value)+"\t"+str(self.domainrowwidth[key])+"\n")
         outputf.close()
