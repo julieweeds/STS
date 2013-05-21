@@ -204,7 +204,7 @@ class Totals:
         outputf.write("##Dependency row totals for "+self.filename+"\n")
         outputf.write("#Grandtotal:\t"+str(self.dependencytotal)+"\n")
         for key,value in self.dependencyrow.iteritems():
-            outputf.write(key+"\t"+str(value)+str(self.dependencyrowwidth[key])+"\n")
+            outputf.write(key+"\t"+str(value)+"\t"+str(self.dependencyrowwidth[key])+"\n")
         outputf.close()
 
         outname = self.filename+"_domrow"
