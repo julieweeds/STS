@@ -208,8 +208,8 @@ class Thesaurus:
                 if done%100==0: print "Completed similarity calculations for "+str(done)+" words"
 
 
-        for wordvectorA in self.vectordict.values():
-            wordvectorA.analyse()
+        #for wordvectorA in self.vectordict.values():
+         #   wordvectorA.analyse()
 
     def outputsim(self,wordA,wordB,metric):
         sim =-1
