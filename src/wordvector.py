@@ -6,6 +6,7 @@ import scipy
 import scipy.sparse as sparse
 from scipy.stats import binom
 import math
+from scipy.stats import norm as normal
 
 def update_params(dim,a,b):
     WordVector.dim=dim
@@ -460,3 +461,18 @@ class WordVector:
             print "Argh"
         #print res
         return res
+
+    def znorm(self):
+        #estimate normal dist params and transform into normal probs
+        self.analyse()
+        print self.word, self.avgsim,self.sd
+
+        for (sim,neigh) in self.tuplelist:
+            p = normal(self.avgsim,self.sd).cdf(sim)
+            self.allsims[neigh]=p
+
+        self.analyse()
+        print self.word,self.avgsim,self.sd
+
+        self.tuplelist=[]
+        self.topk(self.getk())
