@@ -476,3 +476,14 @@ class WordVector:
 
         self.tuplelist=[]
         self.topk(self.getk())
+
+    def znorm_fixed(self,mean,sd):
+        self.analyse()
+        #print self.word,self.avgsim,self.sd
+        for(sim,neigh) in self.tuplelist:
+            p=normal(mean,sd).cdf(sim)
+            self.allsims[neigh]=p
+        self.analyse()
+        #print self.word,self.avgsim,self.sd
+        self.tuplelist=[]
+        self.topk(self.getk())
